@@ -1,11 +1,19 @@
-// utils/sendEmail.js
+// =====================================================
+// NODEMAILER
+// =====================================================
 
 const nodemailer = require("nodemailer");
 
+// =====================================================
+// CREATE TRANSPORTER
+// =====================================================
 
-// Create Transporter
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+
+    port: 587,
+
+    secure: false,
 
     auth: {
         user: process.env.EMAIL_USER,
@@ -13,9 +21,15 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// =====================================================
+// SEND EMAIL FUNCTION
+// =====================================================
 
-// Send Email Function
-const sendEmail = async (to, subject, htmlContent) => {
+const sendEmail = async (
+    to,
+    subject,
+    htmlContent
+) => {
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -27,5 +41,8 @@ const sendEmail = async (to, subject, htmlContent) => {
     await transporter.sendMail(mailOptions);
 };
 
+// =====================================================
+// EXPORT
+// =====================================================
 
 module.exports = sendEmail;
