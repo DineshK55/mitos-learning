@@ -3,7 +3,8 @@
 const mysql = require("mysql2/promise");
 
 
-// Create MySQL Connection
+// ================= MYSQL CONNECTION =================
+
 const db = mysql.createPool({
 
     host: process.env.DB_HOST,
@@ -12,18 +13,31 @@ const db = mysql.createPool({
 
     password: process.env.DB_PASSWORD,
 
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+
+    port: process.env.DB_PORT,
+
+    waitForConnections: true,
+
+    connectionLimit: 10,
+
+    queueLimit: 0,
+
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 
-// Test Connection
+// ================= TEST DATABASE CONNECTION =================
+
 const connectDB = async () => {
 
     try {
 
         const connection = await db.getConnection();
 
-        console.log("MySQL Connected");
+        console.log("Aiven MySQL Connected Successfully");
 
         connection.release();
 
@@ -35,6 +49,5 @@ const connectDB = async () => {
 
 
 connectDB();
-
 
 module.exports = db;
