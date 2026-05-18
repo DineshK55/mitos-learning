@@ -1,15 +1,8 @@
-// =====================================================
-// NODEMAILER
-// =====================================================
-
 const nodemailer = require("nodemailer");
 
-// =====================================================
-// CREATE TRANSPORTER
-// =====================================================
-
 const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
+
+    host: "smtp-relay.brevo.com",
 
     port: 587,
 
@@ -21,10 +14,6 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// =====================================================
-// SEND EMAIL FUNCTION
-// =====================================================
-
 const sendEmail = async (
     to,
     subject,
@@ -33,16 +22,12 @@ const sendEmail = async (
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: to,
-        subject: subject,
+        to,
+        subject,
         html: htmlContent
     };
 
     await transporter.sendMail(mailOptions);
 };
-
-// =====================================================
-// EXPORT
-// =====================================================
 
 module.exports = sendEmail;
