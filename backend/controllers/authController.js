@@ -1,19 +1,31 @@
-// Database Connection
+// =====================================================
+// DATABASE CONNECTION
+// =====================================================
+
 const db = require("../config/db");
 
-// Nodemailer
+// =====================================================
+// NODEMAILER
+// =====================================================
+
 const nodemailer = require("nodemailer");
 
-
-
+// =====================================================
 // JWT
+// =====================================================
+
 const jwt = require("jsonwebtoken");
 
-// ================= REGISTER USER =================
+// =====================================================
+// REGISTER USER
+// =====================================================
 
-exports.registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
+
   try {
-    // Get Data
+
+    // GET DATA
+
     const {
       name,
       phone,
@@ -22,24 +34,34 @@ exports.registerUser = async (req, res) => {
       studentClass,
     } = req.body;
 
-    // Check Existing User
+    // CHECK EXISTING USER
+
     const [existingUser] = await db.query(
-      "SELECT * FROM users WHERE email = ? OR phone = ?",
+      `SELECT * FROM users
+       WHERE email = ? OR phone = ?`,
       [email, phone]
     );
 
-    // User Exists
+    // USER EXISTS
+
     if (existingUser.length > 0) {
+
       return res.status(400).json({
-        message:
-          "Email or Phone Already Registered",
+        message: "Email or Phone Already Registered",
       });
     }
 
-    // Insert User
+    // INSERT USER
+
     await db.query(
-      `INSERT INTO users 
-      (name, phone, email, state, studentClass) 
+      `INSERT INTO users
+      (
+        name,
+        phone,
+        email,
+        state,
+        studentClass
+      )
       VALUES (?, ?, ?, ?, ?)`,
       [
         name,
@@ -50,64 +72,88 @@ exports.registerUser = async (req, res) => {
       ]
     );
 
-    // Success
-    res.status(201).json({
+    // SUCCESS
+
+    return res.status(201).json({
       message: "Registration Successful",
     });
+
   } catch (error) {
+
     console.log(error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Server Error",
     });
   }
 };
 
-// ================= SEND LOGIN OTP =================
+// =====================================================
+// SEND LOGIN OTP
+// =====================================================
 
-exports.sendLoginOTP = async (req, res) => {
+const sendLoginOTP = async (req, res) => {
+
   try {
-    // Get Email Or Phone
+
+    // GET LOGIN ID
+
     const { loginId } = req.body;
 
-    // Find User
+    // FIND USER
+
     const [users] = await db.query(
-      `SELECT * FROM users 
+      `SELECT * FROM users
        WHERE email = ? OR phone = ?`,
       [loginId, loginId]
     );
 
-    // User Not Found
+    // USER NOT FOUND
+
     if (users.length === 0) {
+
       return res.status(404).json({
         message: "User Not Found",
       });
     }
 
-    // User Data
+    // USER DATA
+
     const user = users[0];
 
-    // Generate OTP
+    // GENERATE OTP
+
     const otp = Math.floor(
       100000 + Math.random() * 900000
     ).toString();
 
-    // Expiry Time (10 Minutes)
+    // OTP EXPIRY
+
     const expiry = new Date(
       Date.now() + 10 * 60 * 1000
     );
 
-    // Save OTP In Database
+    // SAVE OTP
+
     await db.query(
-      `UPDATE users 
-       SET otp = ?, otpExpiry = ?
+      `UPDATE users
+       SET otp = ?,
+           otpExpiry = ?
        WHERE id = ?`,
       [otp, expiry, user.id]
     );
 
-    // Send OTP Email
+    // =====================================================
+    // BREVO SMTP
+    // =====================================================
+
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+
+      host: "smtp-relay.brevo.com",
+
+      port: 587,
+
+      secure: false,
 
       auth: {
         user: process.env.EMAIL_USER,
@@ -115,8 +161,12 @@ exports.sendLoginOTP = async (req, res) => {
       },
     });
 
-    // Mail Options
+    // =====================================================
+    // MAIL OPTIONS
+    // =====================================================
+
     const mailOptions = {
+
       from: process.env.EMAIL_USER,
 
       to: user.email,
@@ -132,83 +182,107 @@ exports.sendLoginOTP = async (req, res) => {
       `,
     };
 
-    // Send Email
+    // SEND EMAIL
+
     await transporter.sendMail(mailOptions);
 
-    // Success
-    res.status(200).json({
+    // SUCCESS
+
+    return res.status(200).json({
       message: "OTP Sent Successfully",
     });
+
   } catch (error) {
+
     console.log(error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Server Error",
     });
   }
 };
 
-// ================= VERIFY LOGIN OTP =================
+// =====================================================
+// VERIFY LOGIN OTP
+// =====================================================
 
-exports.verifyLoginOTP = async (req, res) => {
+const verifyLoginOTP = async (req, res) => {
+
   try {
-    // Get Data
+
+    // GET DATA
+
     const { loginId, otp } = req.body;
 
-    // Find User
+    // FIND USER
+
     const [users] = await db.query(
-      `SELECT * FROM users 
+      `SELECT * FROM users
        WHERE email = ? OR phone = ?`,
       [loginId, loginId]
     );
 
-    // User Not Found
+    // USER NOT FOUND
+
     if (users.length === 0) {
+
       return res.status(404).json({
         message: "User Not Found",
       });
     }
 
-    // User Data
+    // USER DATA
+
     const user = users[0];
 
-    // Check OTP
+    // INVALID OTP
+
     if (user.otp !== otp) {
+
       return res.status(400).json({
         message: "Invalid OTP",
       });
     }
 
-    // Check Expiry
+    // OTP EXPIRED
+
     if (new Date(user.otpExpiry) < new Date()) {
+
       return res.status(400).json({
         message: "OTP Expired",
       });
     }
 
-    // Generate JWT
+    // GENERATE JWT
+
     const token = jwt.sign(
+
       {
         id: user.id,
         role: user.role,
       },
+
       process.env.JWT_SECRET,
+
       {
         expiresIn: "7d",
       }
     );
 
-    // Clear OTP
+    // CLEAR OTP
+
     await db.query(
-      `UPDATE users 
+      `UPDATE users
        SET otp = NULL,
            otpExpiry = NULL
        WHERE id = ?`,
       [user.id]
     );
 
-    // Success
-    res.status(200).json({
+    // SUCCESS
+
+    return res.status(200).json({
+
       message: "Login Successful",
 
       token,
@@ -223,11 +297,23 @@ exports.verifyLoginOTP = async (req, res) => {
         role: user.role,
       },
     });
+
   } catch (error) {
+
     console.log(error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Server Error",
     });
   }
+};
+
+// =====================================================
+// EXPORTS
+// =====================================================
+
+module.exports = {
+  registerUser,
+  sendLoginOTP,
+  verifyLoginOTP,
 };

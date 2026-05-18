@@ -1,25 +1,44 @@
-// Express
+// =====================================================
+// EXPRESS
+// =====================================================
+
 const express = require("express");
 
 const router = express.Router();
 
-// Auth Controller
-const {
-  registerUser,
-  sendLoginOTP,
-  verifyLoginOTP,
-} = require("../controllers/authController");
+// =====================================================
+// AUTH CONTROLLER
+// =====================================================
 
-// ================= ROUTES =================
+const authController = require("../controllers/authController");
 
-// Register
-router.post("/register", registerUser);
+// =====================================================
+// ROUTES
+// =====================================================
 
-// Send OTP
-router.post("/send-otp", sendLoginOTP);
+// REGISTER USER
 
-// Verify OTP
-router.post("/verify-otp", verifyLoginOTP);
+router.post(
+  "/register",
+  authController.registerUser
+);
 
-// Export
+// SEND LOGIN OTP
+
+router.post(
+  "/send-otp",
+  authController.sendLoginOTP
+);
+
+// VERIFY LOGIN OTP
+
+router.post(
+  "/verify-otp",
+  authController.verifyLoginOTP
+);
+
+// =====================================================
+// EXPORT ROUTER
+// =====================================================
+
 module.exports = router;
