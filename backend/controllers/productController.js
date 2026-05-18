@@ -97,14 +97,20 @@ const fetchProducts = async (req, res) => {
       success: true,
       products,
     });
-  } catch (error) {
-    console.log("FETCH PRODUCTS ERROR:", error);
+  }catch (error) {
 
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-    });
-  }
+  console.log(
+    "FETCH PRODUCTS ERROR:",
+    error
+  );
+
+  res.status(500).json({
+    success: false,
+    message: "Server Error",
+    error: error.message,
+  });
+
+}
 };
 
 // =====================================================

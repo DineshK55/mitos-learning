@@ -10,7 +10,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL:
-    "https://mitos-learning.onrender.com",
+    "http://localhost:5000/api",
 
   headers: {
     "Content-Type":

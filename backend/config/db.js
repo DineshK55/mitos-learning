@@ -1,20 +1,22 @@
-const mysql = require("mysql2");
+// =====================================================
+// IMPORT MYSQL2
+// =====================================================
 
-const connection = mysql.createPool({
+const mysql = require("mysql2/promise");
+
+// =====================================================
+// CREATE MYSQL CONNECTION POOL
+// =====================================================
+
+const pool = mysql.createPool({
   host: process.env.DB_HOST,
-
   port: process.env.DB_PORT,
-
   user: process.env.DB_USER,
-
   password: process.env.DB_PASSWORD,
-
   database: process.env.DB_NAME,
 
   waitForConnections: true,
-
   connectionLimit: 10,
-
   queueLimit: 0,
 
   ssl: {
@@ -22,14 +24,29 @@ const connection = mysql.createPool({
   },
 });
 
-connection.getConnection((err, conn) => {
-  if (err) {
-    console.log("DATABASE CONNECTION FAILED ❌");
-    console.log(err);
-  } else {
-    console.log("MYSQL DATABASE CONNECTED ✅");
-    conn.release();
-  }
-});
+// =====================================================
+// TEST DATABASE CONNECTION
+// =====================================================
 
-module.exports = connection.promise();
+const connectDB = async () => {
+  try {
+    const connection =
+      await pool.getConnection();
+
+    console.log(
+      "MYSQL DATABASE CONNECTED ✅"
+    );
+
+    connection.release();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+connectDB();
+
+// =====================================================
+// EXPORT POOL
+// =====================================================
+
+module.exports = pool;

@@ -59,9 +59,10 @@ const createProduct = async (
 // =====================================================
 
 const getAllProducts = async () => {
+
   const query = `
     SELECT * FROM products
-    ORDER BY created_at DESC
+    ORDER BY id DESC
   `;
 
   const [products] =
@@ -77,6 +78,7 @@ const getAllProducts = async () => {
 const getProductById = async (
   id
 ) => {
+
   const query = `
     SELECT * FROM products
     WHERE id = ?
@@ -96,6 +98,7 @@ const updateProduct = async (
   id,
   productData
 ) => {
+
   const {
     title,
     description,
@@ -148,6 +151,7 @@ const updateProduct = async (
 const deleteProduct = async (
   id
 ) => {
+
   const query = `
     DELETE FROM products
     WHERE id = ?
