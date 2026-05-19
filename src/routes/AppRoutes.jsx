@@ -25,7 +25,7 @@ import AdminDashboard from "../pages/admin/AdminDashboard";
 import AdminProducts from "../pages/admin/AdminProducts";
 import AdminOrders from "../pages/admin/AdminOrders";
 import AdminUsers from "../pages/admin/AdminUsers";
-import SingleUser from "../pages/Admin/SingleUser";
+import SingleUser from "../pages/admin/SingleUser";
 import AddProduct from "../pages/admin/AddProduct";
 import EditProduct from "../pages/admin/EditProduct";
 import AddBanner from "../pages/admin/AddBanner";
