@@ -1,28 +1,4 @@
-const nodemailer = require("nodemailer");
-
-// =====================================================
-// BREVO TRANSPORTER
-// =====================================================
-
-const transporter = nodemailer.createTransport({
-
-  host:
-    process.env.EMAIL_HOST,
-
-  port:
-    465,
-
-  secure: true,
-
-  auth: {
-
-    user:
-      process.env.EMAIL_USER,
-
-    pass:
-      process.env.EMAIL_PASS,
-  },
-});
+const axios = require("axios");
 
 // =====================================================
 // SEND EMAIL FUNCTION
@@ -38,66 +14,60 @@ const sendEmail = async (
 
   try {
 
-    // =====================================================
-    // MAIL OPTIONS
-    // =====================================================
+    const response =
+      await axios.post(
 
-    const mailOptions = {
+        "https://api.brevo.com/v3/smtp/email",
 
-      from:
-        process.env.EMAIL_FROM,
+        {
 
-      to,
+          sender: {
 
-      subject,
+            name: "Mitos Learning",
 
-      html:
-        htmlContent,
-    };
+            email:
+              "noreply@mitoslearning.shop",
+          },
 
-    // =====================================================
-    // DEBUG LOGS
-    // =====================================================
+          to: [
+            {
+              email: to,
+            },
+          ],
 
-    console.log(
-      "EMAIL USER:",
-      process.env.EMAIL_USER
-    );
+          subject,
 
-    console.log(
-      "EMAIL FROM:",
-      process.env.EMAIL_FROM
-    );
+          htmlContent,
+        },
 
-    // =====================================================
-    // SEND MAIL
-    // =====================================================
+        {
 
-    const info =
-      await transporter.sendMail(
-        mailOptions
+          headers: {
+
+            "api-key":
+              process.env.BREVO_API_KEY,
+
+            "Content-Type":
+              "application/json",
+          },
+        }
       );
 
     console.log(
-      "EMAIL SENT:",
-      info.messageId
+      "EMAIL SENT SUCCESSFULLY"
     );
 
-    return info;
+    return response.data;
 
   } catch (error) {
 
     console.log(
       "EMAIL ERROR:",
-      error
+      error.response?.data || error.message
     );
 
     throw error;
   }
 };
-
-// =====================================================
-// EXPORT
-// =====================================================
 
 module.exports = sendEmail;
