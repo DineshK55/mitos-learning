@@ -9,13 +9,20 @@ import axios from "axios";
 // =====================================================
 
 const api = axios.create({
-baseURL:
-"https://mitos-learning-backend.onrender.com/api",
+ baseURL:"http://localhost:5000/api",
+
+//baseURL: "https://mitos-learning.onrender.com/api",
 
   headers: {
     "Content-Type":
       "application/json",
   },
+
+  // =====================================================
+  // REQUEST TIMEOUT
+  // =====================================================
+
+  timeout: 15000,
 });
 
 // =====================================================
@@ -66,6 +73,20 @@ api.interceptors.response.use(
   (error) => {
 
     // =====================================================
+    // REQUEST TIMEOUT
+    // =====================================================
+
+    if (
+      error.code ===
+      "ECONNABORTED"
+    ) {
+
+      console.log(
+        "Request Timeout"
+      );
+    }
+
+    // =====================================================
     // UNAUTHORIZED
     // =====================================================
 
@@ -74,7 +95,9 @@ api.interceptors.response.use(
       401
     ) {
 
+      // =====================================================
       // REMOVE TOKEN
+      // =====================================================
 
       localStorage.removeItem(
         "token"

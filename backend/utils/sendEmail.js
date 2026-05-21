@@ -1,54 +1,111 @@
 const nodemailer = require("nodemailer");
 
+// =====================================================
+// BREVO TRANSPORTER
+// =====================================================
+
 const transporter = nodemailer.createTransport({
 
-    host: process.env.EMAIL_HOST,
+  host:
+    process.env.EMAIL_HOST,
 
-    port: process.env.EMAIL_PORT,
+  port:
+    process.env.EMAIL_PORT,
 
-    secure: false,
+  secure: false,
 
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
+  requireTLS: true,
 
+  auth: {
+
+    user:
+      process.env.EMAIL_USER,
+
+    pass:
+      process.env.EMAIL_PASS,
+  },
+
+  connectionTimeout: 10000,
+
+  greetingTimeout: 10000,
+
+  socketTimeout: 10000,
 });
+
+// =====================================================
+// SEND EMAIL FUNCTION
+// =====================================================
 
 const sendEmail = async (
 
-    to,
-    subject,
-    htmlContent
+  to,
+  subject,
+  htmlContent
 
 ) => {
 
-    try {
+  try {
 
-        const mailOptions = {
+    // =====================================================
+    // MAIL OPTIONS
+    // =====================================================
 
-            from: process.env.EMAIL_FROM,
+    const mailOptions = {
 
-            to,
+      from:
+        process.env.EMAIL_FROM,
 
-            subject,
+      to,
 
-            html: htmlContent
+      subject,
 
-        };
+      html:
+        htmlContent,
+    };
 
-        const info = await transporter.sendMail(mailOptions);
+    // =====================================================
+    // DEBUG LOGS
+    // =====================================================
 
-        console.log("EMAIL SENT SUCCESS:", info.messageId);
+    console.log(
+      "EMAIL USER:",
+      process.env.EMAIL_USER
+    );
 
-    } catch (error) {
+    console.log(
+      "EMAIL FROM:",
+      process.env.EMAIL_FROM
+    );
 
-        console.log("EMAIL ERROR:", error);
+    // =====================================================
+    // SEND MAIL
+    // =====================================================
 
-        throw error;
+    const info =
+      await transporter.sendMail(
+        mailOptions
+      );
 
-    }
+    console.log(
+      "EMAIL SENT:",
+      info.messageId
+    );
 
+    return info;
+
+  } catch (error) {
+
+    console.log(
+      "EMAIL ERROR:",
+      error
+    );
+
+    throw error;
+  }
 };
+
+// =====================================================
+// EXPORT
+// =====================================================
 
 module.exports = sendEmail;
