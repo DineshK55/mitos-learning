@@ -35,8 +35,7 @@ const createBanner =
 
       if (req.file) {
 
-        image =
-          req.file.filename;
+        image = req.file.path;
       }
 
       // ======================================================
@@ -194,8 +193,7 @@ const updateBanner =
 
       if (req.file) {
 
-        image =
-          req.file.filename;
+        image = req.file.path;
       }
 
       // ======================================================

@@ -15,9 +15,9 @@ const {
 // =====================================================
 
 const addProduct = async (req, res) => {
+
   try {
 
-     console.log(req.file);
     const {
       title,
       description,
@@ -29,55 +29,61 @@ const addProduct = async (req, res) => {
     } = req.body;
 
     // =====================================================
-    // IMAGE
+    // CLOUDINARY IMAGE
     // =====================================================
 
-    const thumbnail = req.file
-      ? req.file.filename
-      : null;
+    const thumbnail =
+      req.file
+        ? req.file.path
+        : null;
 
     // =====================================================
     // VALIDATION
     // =====================================================
 
-    console.log(req.body);
+    if (
+      !title ||
+      !description ||
+      !original_price ||
+      !discount_price ||
+      !category
+    ) {
 
-console.log(req.file);
+      return res.status(400).json({
 
-if (
-  !title ||
-  !description ||
-  !original_price ||
-  !discount_price ||
-  !category
-) {
+        success: false,
 
-  return res.status(400).json({
+        message:
+          "Please Fill All Required Fields",
 
-    success: false,
+      });
 
-    message:
-      "Please Fill All Required Fields",
-
-  });
-
-}
-
-
+    }
 
     // =====================================================
     // CREATE PRODUCT
     // =====================================================
 
     await createProduct({
+
       title,
+
       description,
+
       original_price,
+
       discount_price,
+
       category,
-      featured: featured || "false",
-      status: status || "active",
+
+      featured:
+        featured || "false",
+
+      status:
+        status || "active",
+
       thumbnail,
+
     });
 
     // =====================================================
@@ -85,16 +91,30 @@ if (
     // =====================================================
 
     res.status(201).json({
+
       success: true,
-      message: "Product Added Successfully",
+
+      message:
+        "Product Added Successfully",
+
     });
+
   } catch (error) {
-    console.log("ADD PRODUCT ERROR:", error);
+
+    console.log(
+      "ADD PRODUCT ERROR:",
+      error
+    );
 
     res.status(500).json({
+
       success: false,
-      message: "Server Error",
+
+      message:
+        "Server Error",
+
     });
+
   }
 };
 
@@ -102,67 +122,96 @@ if (
 // GET ALL PRODUCTS
 // =====================================================
 
-const fetchProducts = async (req, res) => {
+const fetchProducts = async (
+  req,
+  res
+) => {
+
   try {
-    const products = await getAllProducts();
+
+    const products =
+      await getAllProducts();
 
     res.status(200).json({
+
       success: true,
+
       products,
+
     });
-  }catch (error) {
 
-  console.log(
-    "FETCH PRODUCTS ERROR:",
-    error
-  );
+  } catch (error) {
 
-  res.status(500).json({
-    success: false,
-    message: "Server Error",
-    error: error.message,
-  });
+    console.log(
+      "FETCH PRODUCTS ERROR:",
+      error
+    );
 
-}
+    res.status(500).json({
+
+      success: false,
+
+      message:
+        "Server Error",
+
+    });
+
+  }
 };
 
 // =====================================================
 // GET SINGLE PRODUCT
 // =====================================================
 
-const fetchSingleProduct = async (
-  req,
-  res
-) => {
-  try {
-    const product =
-      await getProductById(
-        req.params.id
+const fetchSingleProduct =
+  async (req, res) => {
+
+    try {
+
+      const product =
+        await getProductById(
+          req.params.id
+        );
+
+      if (!product) {
+
+        return res.status(404).json({
+
+          success: false,
+
+          message:
+            "Product Not Found",
+
+        });
+
+      }
+
+      res.status(200).json({
+
+        success: true,
+
+        product,
+
+      });
+
+    } catch (error) {
+
+      console.log(
+        "FETCH SINGLE PRODUCT ERROR:",
+        error
       );
 
-    if (!product) {
-      return res.status(404).json({
+      res.status(500).json({
+
         success: false,
-        message: "Product Not Found",
+
+        message:
+          "Server Error",
+
       });
+
     }
-
-    res.status(200).json({
-      success: true,
-      product,
-    });
-  } catch (error) {
-    console.log(
-      "FETCH SINGLE PRODUCT ERROR:",
-      error
-    );
-
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-    });
-  }
-};
+  };
 
 // =====================================================
 // UPDATE PRODUCT
@@ -172,7 +221,9 @@ const editProduct = async (
   req,
   res
 ) => {
+
   try {
+
     const {
       title,
       description,
@@ -193,19 +244,26 @@ const editProduct = async (
       );
 
     if (!existingProduct) {
+
       return res.status(404).json({
+
         success: false,
-        message: "Product Not Found",
+
+        message:
+          "Product Not Found",
+
       });
+
     }
 
     // =====================================================
-    // IMAGE UPDATE
+    // CLOUDINARY IMAGE UPDATE
     // =====================================================
 
-    const thumbnail = req.file
-      ? req.file.filename
-      : existingProduct.thumbnail;
+    const thumbnail =
+      req.file
+        ? req.file.path
+        : existingProduct.thumbnail;
 
     // =====================================================
     // UPDATE PRODUCT
@@ -214,14 +272,23 @@ const editProduct = async (
     await updateProduct(
       req.params.id,
       {
+
         title,
+
         description,
+
         original_price,
+
         discount_price,
+
         category,
+
         featured,
+
         status,
+
         thumbnail,
+
       }
     );
 
@@ -230,20 +297,30 @@ const editProduct = async (
     // =====================================================
 
     res.status(200).json({
+
       success: true,
+
       message:
         "Product Updated Successfully",
+
     });
+
   } catch (error) {
+
     console.log(
       "UPDATE PRODUCT ERROR:",
       error
     );
 
     res.status(500).json({
+
       success: false,
-      message: "Server Error",
+
+      message:
+        "Server Error",
+
     });
+
   }
 };
 
@@ -255,17 +332,25 @@ const removeProduct = async (
   req,
   res
 ) => {
+
   try {
+
     const existingProduct =
       await getProductById(
         req.params.id
       );
 
     if (!existingProduct) {
+
       return res.status(404).json({
+
         success: false,
-        message: "Product Not Found",
+
+        message:
+          "Product Not Found",
+
       });
+
     }
 
     await deleteProduct(
@@ -273,20 +358,30 @@ const removeProduct = async (
     );
 
     res.status(200).json({
+
       success: true,
+
       message:
         "Product Deleted Successfully",
+
     });
+
   } catch (error) {
+
     console.log(
       "DELETE PRODUCT ERROR:",
       error
     );
 
     res.status(500).json({
+
       success: false,
-      message: "Server Error",
+
+      message:
+        "Server Error",
+
     });
+
   }
 };
 
@@ -295,9 +390,15 @@ const removeProduct = async (
 // =====================================================
 
 module.exports = {
+
   addProduct,
+
   fetchProducts,
+
   fetchSingleProduct,
+
   editProduct,
+
   removeProduct,
+
 };
