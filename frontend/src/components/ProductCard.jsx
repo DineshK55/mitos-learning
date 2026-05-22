@@ -1,8 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-import {
-  BACKEND_URL,
-} from "../services/api";
+
 
 function ProductCard({
   id,
@@ -35,12 +33,7 @@ function ProductCard({
   // IMAGE URL FIX
   // =====================================================
 
-  const imageUrl =
-    image
-      ? image.startsWith("http")
-        ? image
-        : `${BACKEND_URL}/uploads/products/${image}`
-      : "https://placehold.co/600x400?text=No+Image";
+ 
 
   return (
 
@@ -82,7 +75,10 @@ function ProductCard({
       >
 
         <img
-          src={imageUrl}
+          src={
+            image ||
+            "https://placehold.co/600x400?text=No+Image"
+          }
           alt={title}
           className="
           w-full

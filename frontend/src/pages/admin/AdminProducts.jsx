@@ -353,12 +353,9 @@ function AdminProducts() {
                       // FIX IMAGE URL
                       // =====================================================
 
-                      const imageUrl =
-                        product.thumbnail?.startsWith("http")
-                          ? product.thumbnail
-                          : `http://localhost:5000/uploads/${product.thumbnail
-                              ?.replace("uploads/", "")
-                              ?.trim()}`;
+                     const imageUrl =
+  product.thumbnail ||
+  "https://placehold.co/600x400?text=No+Image";
 
                       return (
 

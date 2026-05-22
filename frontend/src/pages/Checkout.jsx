@@ -18,9 +18,7 @@ import {
   createOrder,
 } from "../services/orderService";
 
-import {
-  BACKEND_URL,
-} from "../services/api";
+
 
 // Navbar
 import Navbar from "../components/Navbar";
@@ -248,7 +246,7 @@ function Checkout() {
                       {/* IMAGE */}
 
                       <img
-                       src={`${BACKEND_URL}/${product.thumbnail}`}
+                       src={product.thumbnail}
                         alt={product.title}
                         className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-2xl shadow-md"
                       />

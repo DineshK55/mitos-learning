@@ -131,7 +131,7 @@ function ProductDetails() {
           <div>
 
             <img
-              src={`https://mitos-learning-backend.onrender.com/uploads/${product.thumbnail}`}
+              src={product.thumbnail}
               alt={product.title}
               className="w-full h-[300px] sm:h-[450px] object-cover rounded-3xl shadow-lg"
             />

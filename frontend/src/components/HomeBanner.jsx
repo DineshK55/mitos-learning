@@ -20,7 +20,7 @@ import {
   getAllBanners,
 } from "../services/bannerService";
 
-import { BACKEND_URL } from "../services/api";
+
 
 function HomeBanner() {
 
@@ -141,7 +141,7 @@ function HomeBanner() {
                 {/* ===================================================== */}
 
                 <img
-                  src={`${BACKEND_URL}/uploads/banners/${banner.image}`}
+                  src={banner.image}
                   alt={banner.title}
                   className="
                   w-full
