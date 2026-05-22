@@ -57,7 +57,9 @@ export const getSingleProduct = async (
 export const createProduct = async (
   productData
 ) => {
+
   try {
+
     const token = getToken();
 
     const response =
@@ -66,19 +68,22 @@ export const createProduct = async (
         productData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type":
-              "multipart/form-data",
-          },
+  Authorization: `Bearer ${token}`,
+},
         }
       );
 
     return response.data;
+
   } catch (error) {
+
     throw (
-      error.response?.data || error
+      error.response?.data ||
+      error
     );
+
   }
+
 };
 
 // =====================================================
@@ -89,7 +94,9 @@ export const updateProduct = async (
   productId,
   productData
 ) => {
+
   try {
+
     const token = getToken();
 
     const response =
@@ -98,19 +105,22 @@ export const updateProduct = async (
         productData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type":
-              "multipart/form-data",
-          },
+  Authorization: `Bearer ${token}`,
+},
         }
       );
 
     return response.data;
+
   } catch (error) {
+
     throw (
-      error.response?.data || error
+      error.response?.data ||
+      error
     );
+
   }
+
 };
 
 // =====================================================

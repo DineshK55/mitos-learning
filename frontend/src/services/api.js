@@ -4,19 +4,18 @@
 
 import axios from "axios";
 
+export const BACKEND_URL =
+   "https://mitos-learning-backend.onrender.com";
+
 // =====================================================
 // AXIOS INSTANCE
 // =====================================================
 
 const api = axios.create({
- //baseURL:"http://localhost:5000/api",
+baseURL:
+  `${BACKEND_URL}/api`,
 
-baseURL: "https://mitos-learning-backend.onrender.com/api",
-
-  headers: {
-    "Content-Type":
-      "application/json",
-  },
+ 
 
   // =====================================================
   // REQUEST TIMEOUT

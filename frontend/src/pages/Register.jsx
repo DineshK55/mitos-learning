@@ -9,12 +9,22 @@ import {
 // Toast
 import { toast } from "react-toastify";
 
+// Icons
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  GraduationCap,
+} from "lucide-react";
+
 // Service
 import {
   registerUser,
 } from "../services/authService";
 
 const Register = () => {
+
   // Navigate
   const navigate = useNavigate();
 
@@ -36,16 +46,19 @@ const Register = () => {
   // ================= HANDLE CHANGE =================
 
   const handleChange = (e) => {
+
     setFormData({
       ...formData,
       [e.target.name]:
         e.target.value,
     });
+
   };
 
   // ================= HANDLE SUBMIT =================
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     // Validation
@@ -56,12 +69,14 @@ const Register = () => {
       !formData.state ||
       !formData.studentClass
     ) {
+
       return toast.error(
         "Please Fill All Fields"
       );
     }
 
     try {
+
       setLoading(true);
 
       // Register API
@@ -91,221 +106,321 @@ const Register = () => {
 
       // Redirect Login
       navigate("/login");
+
     } catch (error) {
+
       console.log(error);
 
       toast.error(
         error?.message ||
           "Registration Failed"
       );
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-10">
 
-      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-lg">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-purple-50 to-white flex items-center justify-center px-4 py-10">
 
-        {/* Heading */}
-        <h2 className="text-3xl font-bold text-center text-purple-700 mb-2">
-          Student Registration
-        </h2>
+      {/* CARD */}
 
-        <p className="text-center text-gray-500 mb-8">
-          Create Your Account
-        </p>
+      <div className="w-full max-w-2xl bg-white/90 backdrop-blur-xl border border-white shadow-2xl rounded-[32px] p-6 sm:p-10">
+
+        {/* TOP */}
+
+        <div className="text-center mb-10">
+
+          <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-r from-purple-600 to-violet-700 flex items-center justify-center shadow-xl">
+
+            <GraduationCap
+              size={38}
+              className="text-white"
+            />
+
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mt-5">
+
+            Student Registration
+
+          </h2>
+
+          <p className="text-gray-500 mt-3 text-sm sm:text-base">
+
+            Create Your Premium Learning Account
+
+          </p>
+
+        </div>
 
         {/* ================= FORM ================= */}
 
         <form
           onSubmit={handleSubmit}
-          className="space-y-5"
+          className="space-y-6"
         >
 
-          {/* Name */}
+          {/* NAME */}
+
           <div>
 
-            <label className="block mb-2 font-medium">
+            <label className="block mb-3 text-sm font-semibold text-gray-700">
+
               Full Name
+
             </label>
 
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter Full Name"
-              required
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-purple-600"
-            />
+            <div className="relative">
+
+              <User
+                size={18}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Enter Full Name"
+                required
+                className="w-full h-14 rounded-2xl border border-gray-200 bg-gray-50 pl-12 pr-4 outline-none focus:border-purple-600 focus:bg-white transition"
+              />
+
+            </div>
 
           </div>
 
-          {/* Phone */}
-          <div>
+          {/* PHONE + EMAIL */}
 
-            <label className="block mb-2 font-medium">
-              Phone Number
-            </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <input
-              type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Enter Phone Number"
-              required
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-purple-600"
-            />
+            {/* PHONE */}
 
-          </div>
+            <div>
 
-          {/* Email */}
-          <div>
+              <label className="block mb-3 text-sm font-semibold text-gray-700">
 
-            <label className="block mb-2 font-medium">
-              Email
-            </label>
+                Phone Number
 
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter Email Address"
-              required
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-purple-600"
-            />
+              </label>
 
-          </div>
+              <div className="relative">
 
-          {/* State */}
-          <div>
+                <Phone
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                />
 
-            <label className="block mb-2 font-medium">
-              State
-            </label>
+                <input
+                  type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Enter Phone Number"
+                  required
+                  className="w-full h-14 rounded-2xl border border-gray-200 bg-gray-50 pl-12 pr-4 outline-none focus:border-purple-600 focus:bg-white transition"
+                />
 
-            <select
-              name="state"
-              value={formData.state}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-purple-600"
-            >
+              </div>
 
-              <option value="">
-                Select State
-              </option>
+            </div>
 
-              <option value="Tamil Nadu">
-                Tamil Nadu
-              </option>
+            {/* EMAIL */}
 
-              <option value="Kerala">
-                Kerala
-              </option>
+            <div>
 
-              <option value="Karnataka">
-                Karnataka
-              </option>
+              <label className="block mb-3 text-sm font-semibold text-gray-700">
 
-              <option value="Andhra Pradesh">
-                Andhra Pradesh
-              </option>
+                Email Address
 
-              <option value="Telangana">
-                Telangana
-              </option>
+              </label>
 
-              <option value="Maharashtra">
-                Maharashtra
-              </option>
+              <div className="relative">
 
-              <option value="Delhi">
-                Delhi
-              </option>
+                <Mail
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                />
 
-              <option value="West Bengal">
-                West Bengal
-              </option>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter Email Address"
+                  required
+                  className="w-full h-14 rounded-2xl border border-gray-200 bg-gray-50 pl-12 pr-4 outline-none focus:border-purple-600 focus:bg-white transition"
+                />
 
-              <option value="Uttar Pradesh">
-                Uttar Pradesh
-              </option>
+              </div>
 
-              <option value="Gujarat">
-                Gujarat
-              </option>
-
-              <option value="Other">
-                Other
-              </option>
-
-            </select>
+            </div>
 
           </div>
 
-          {/* Class */}
-          <div>
+          {/* STATE + CLASS */}
 
-            <label className="block mb-2 font-medium">
-              Class
-            </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <select
-              name="studentClass"
-              value={formData.studentClass}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-purple-600"
-            >
+            {/* STATE */}
 
-              <option value="">
-                Select Class
-              </option>
+            <div>
 
-              <option value="11">
-                Class 11
-              </option>
+              <label className="block mb-3 text-sm font-semibold text-gray-700">
 
-              <option value="12">
-                Class 12
-              </option>
+                State
 
-              <option value="Repeater">
-                Repeater
-              </option>
+              </label>
 
-            </select>
+              <div className="relative">
+
+                <MapPin
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+
+                <select
+                  name="state"
+                  value={formData.state}
+                  onChange={handleChange}
+                  required
+                  className="w-full h-14 rounded-2xl border border-gray-200 bg-gray-50 pl-12 pr-4 outline-none focus:border-purple-600 focus:bg-white transition appearance-none"
+                >
+
+                  <option value="">
+                    Select State
+                  </option>
+
+                  <option value="Tamil Nadu">
+                    Tamil Nadu
+                  </option>
+
+                  <option value="Kerala">
+                    Kerala
+                  </option>
+
+                  <option value="Karnataka">
+                    Karnataka
+                  </option>
+
+                  <option value="Andhra Pradesh">
+                    Andhra Pradesh
+                  </option>
+
+                  <option value="Telangana">
+                    Telangana
+                  </option>
+
+                  <option value="Maharashtra">
+                    Maharashtra
+                  </option>
+
+                  <option value="Delhi">
+                    Delhi
+                  </option>
+
+                  <option value="West Bengal">
+                    West Bengal
+                  </option>
+
+                  <option value="Uttar Pradesh">
+                    Uttar Pradesh
+                  </option>
+
+                  <option value="Gujarat">
+                    Gujarat
+                  </option>
+
+                  <option value="Other">
+                    Other
+                  </option>
+
+                </select>
+
+              </div>
+
+            </div>
+
+            {/* CLASS */}
+
+            <div>
+
+              <label className="block mb-3 text-sm font-semibold text-gray-700">
+
+                Class
+
+              </label>
+
+              <div className="relative">
+
+                <GraduationCap
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+
+                <select
+                  name="studentClass"
+                  value={formData.studentClass}
+                  onChange={handleChange}
+                  required
+                  className="w-full h-14 rounded-2xl border border-gray-200 bg-gray-50 pl-12 pr-4 outline-none focus:border-purple-600 focus:bg-white transition appearance-none"
+                >
+
+                  <option value="">
+                    Select Class
+                  </option>
+
+                  <option value="11">
+                    Class 11
+                  </option>
+
+                  <option value="12">
+                    Class 12
+                  </option>
+
+                  <option value="Repeater">
+                    Repeater
+                  </option>
+
+                </select>
+
+              </div>
+
+            </div>
 
           </div>
 
-          {/* Register Button */}
+          {/* BUTTON */}
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-purple-700 hover:bg-purple-800 text-white py-3 rounded-lg font-semibold transition disabled:opacity-70"
+            className="w-full h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-violet-700 hover:scale-[1.01] hover:shadow-xl transition-all duration-300 text-white font-bold text-lg disabled:opacity-70"
           >
 
             {loading
               ? "Creating Account..."
-              : "Register"}
+              : "Create Account"}
 
           </button>
 
         </form>
 
-        {/* Login Link */}
-        <p className="text-center mt-5 text-gray-600">
+        {/* LOGIN LINK */}
+
+        <p className="text-center mt-7 text-gray-600 text-sm sm:text-base">
 
           Already have an account?{" "}
 
           <Link
             to="/login"
-            className="text-purple-700 font-semibold hover:underline"
+            className="text-purple-700 font-bold hover:underline"
           >
 
             Login
@@ -317,6 +432,7 @@ const Register = () => {
       </div>
 
     </div>
+
   );
 };
 

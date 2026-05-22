@@ -49,12 +49,12 @@ function AdminProducts() {
 
     try {
 
-     const response =
-  await getAllProducts();
+      const response =
+        await getAllProducts();
 
-setProducts(
-  response.products || []
-);
+      setProducts(
+        response.products || []
+      );
 
     } catch (error) {
 
@@ -91,14 +91,14 @@ setProducts(
     try {
 
       const response =
-  await deleteProduct(productId);
+        await deleteProduct(productId);
 
-toast.success(
-  response.message ||
-  "Product Deleted Successfully"
-);
+      toast.success(
+        response.message ||
+        "Product Deleted Successfully"
+      );
 
-fetchProducts();
+      fetchProducts();
 
     } catch (error) {
 
@@ -145,7 +145,9 @@ fetchProducts();
       <div className="min-h-screen flex items-center justify-center">
 
         <h1 className="text-3xl font-bold text-purple-700">
+
           Loading Products...
+
         </h1>
 
       </div>
@@ -160,25 +162,48 @@ fetchProducts();
       {/* TOP SECTION */}
       {/* ===================================================== */}
 
-      <div className="bg-white shadow-sm px-6 py-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+      <div
+        className="
+        bg-white
+        shadow-sm
+        px-4
+        md:px-6
+        py-5
+        flex
+        flex-col
+        lg:flex-row
+        lg:items-center
+        lg:justify-between
+        gap-5
+        "
+      >
 
         <div>
 
-          <h1 className="text-3xl font-bold text-gray-800">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+
             Product Management
+
           </h1>
 
           <p className="text-gray-500 mt-1">
+
             Manage All Products
+
           </p>
 
         </div>
 
-        <div className="flex flex-col md:flex-row gap-4">
+        <div
+          className="
+          flex
+          flex-col
+          sm:flex-row
+          gap-4
+          "
+        >
 
-          {/* ===================================================== */}
           {/* SEARCH */}
-          {/* ===================================================== */}
 
           <input
             type="text"
@@ -189,16 +214,38 @@ fetchProducts();
                 e.target.value
               )
             }
-            className="border border-gray-300 px-5 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-purple-500"
+            className="
+            border
+            border-gray-300
+            px-5
+            py-3
+            rounded-2xl
+            outline-none
+            focus:ring-2
+            focus:ring-purple-500
+            w-full
+            sm:w-[260px]
+            "
           />
 
-          {/* ===================================================== */}
-          {/* ADD PRODUCT BUTTON */}
-          {/* ===================================================== */}
+          {/* ADD PRODUCT */}
 
           <Link
             to="/admin/add-product"
-            className="bg-purple-700 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-purple-800 transition flex items-center justify-center gap-2"
+            className="
+            bg-purple-700
+            text-white
+            px-6
+            py-3
+            rounded-2xl
+            font-semibold
+            hover:bg-purple-800
+            transition
+            flex
+            items-center
+            justify-center
+            gap-2
+            "
           >
 
             <FaPlus />
@@ -215,18 +262,22 @@ fetchProducts();
       {/* PRODUCT STATS */}
       {/* ===================================================== */}
 
-      <div className="p-6 pb-0">
+      <div className="p-4 md:p-6 pb-0">
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           <div className="bg-white rounded-3xl shadow-md p-6">
 
             <h2 className="text-gray-500 font-semibold">
+
               Total Products
+
             </h2>
 
-            <h1 className="text-4xl font-bold text-purple-700 mt-3">
+            <h1 className="text-4xl font-black text-purple-700 mt-3">
+
               {products.length}
+
             </h1>
 
           </div>
@@ -239,17 +290,15 @@ fetchProducts();
       {/* PRODUCT TABLE */}
       {/* ===================================================== */}
 
-      <div className="p-6">
+      <div className="p-4 md:p-6">
 
         <div className="bg-white rounded-3xl shadow-md overflow-hidden">
 
           <div className="overflow-x-auto">
 
-            <table className="w-full min-w-[1200px]">
+            <table className="w-full min-w-[1100px]">
 
-              {/* ===================================================== */}
               {/* TABLE HEAD */}
-              {/* ===================================================== */}
 
               <thead className="bg-purple-700 text-white">
 
@@ -291,163 +340,224 @@ fetchProducts();
 
               </thead>
 
-              {/* ===================================================== */}
               {/* TABLE BODY */}
-              {/* ===================================================== */}
 
               <tbody>
 
                 {filteredProducts.length > 0 ? (
 
                   filteredProducts.map(
-                    (product) => (
+                    (product) => {
 
-                      <tr
-                        key={product.id}
-                        className="border-b hover:bg-purple-50 transition"
-                      >
+                      // =====================================================
+                      // FIX IMAGE URL
+                      // =====================================================
 
-                        {/* ===================================================== */}
-                        {/* IMAGE */}
-                        {/* ===================================================== */}
+                      const imageUrl =
+                        product.thumbnail?.startsWith("http")
+                          ? product.thumbnail
+                          : `http://localhost:5000/uploads/${product.thumbnail
+                              ?.replace("uploads/", "")
+                              ?.trim()}`;
 
-                        <td className="px-6 py-5">
+                      return (
 
-                          <img
-                            src={`http://localhost:5000/uploads/${product.thumbnail}`}
-                            alt={product.title}
-                            className="w-20 h-20 object-cover rounded-2xl"
-                          />
+                        <tr
+                          key={product.id}
+                          className="
+                          border-b
+                          hover:bg-purple-50
+                          transition
+                          "
+                        >
 
-                        </td>
+                          {/* IMAGE */}
 
-                        {/* ===================================================== */}
-                        {/* PRODUCT */}
-                        {/* ===================================================== */}
+                          <td className="px-6 py-5">
 
-                        <td className="px-6 py-5">
+                            <img
+                              src={imageUrl}
+                              alt={product.title}
+                              className="
+                              w-20
+                              h-20
+                              object-cover
+                              rounded-2xl
+                              border
+                              shadow-sm
+                              "
+                            />
 
-                          <h1 className="font-bold text-gray-800">
-                            {product.title}
-                          </h1>
+                          </td>
 
-                          <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                            {product.description}
-                          </p>
+                          {/* PRODUCT */}
 
-                        </td>
+                          <td className="px-6 py-5">
 
-                        {/* ===================================================== */}
-                        {/* CATEGORY */}
-                        {/* ===================================================== */}
+                            <h1 className="font-bold text-gray-800 text-lg">
 
-                        <td className="px-6 py-5">
+                              {product.title}
 
-                          {product.category}
+                            </h1>
 
-                        </td>
-
-                        {/* ===================================================== */}
-                        {/* ORIGINAL PRICE */}
-                        {/* ===================================================== */}
-
-                        <td className="px-6 py-5 text-gray-500 line-through">
-
-                          ₹ {product.original_price}
-
-                        </td>
-
-                        {/* ===================================================== */}
-                        {/* DISCOUNT PRICE */}
-                        {/* ===================================================== */}
-
-                        <td className="px-6 py-5 text-green-600 font-bold">
-
-                          ₹ {product.discount_price}
-
-                        </td>
-
-                        {/* ===================================================== */}
-                        {/* FEATURED */}
-                        {/* ===================================================== */}
-
-                        <td className="px-6 py-5">
-
-                          <span
-                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                              product.featured === "Yes"
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-gray-100 text-gray-600"
-                            }`}
-                          >
-
-                            {product.featured}
-
-                          </span>
-
-                        </td>
-
-                        {/* ===================================================== */}
-                        {/* STATUS */}
-                        {/* ===================================================== */}
-
-                        <td className="px-6 py-5">
-
-                          <span
-                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                              product.status === "Active"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-red-100 text-red-700"
-                            }`}
-                          >
-
-                            {product.status}
-
-                          </span>
-
-                        </td>
-
-                        {/* ===================================================== */}
-                        {/* ACTIONS */}
-                        {/* ===================================================== */}
-
-                        <td className="px-6 py-5">
-
-                          <div className="flex items-center justify-center gap-3">
-
-                            {/* Edit */}
-
-                            <Link
-                              to={`/admin/edit-product/${product.id}`}
-                              className="bg-blue-500 text-white p-3 rounded-xl hover:bg-blue-600 transition"
+                            <p
+                              className="
+                              text-sm
+                              text-gray-500
+                              mt-1
+                              line-clamp-2
+                              max-w-[320px]
+                              "
                             >
 
-                              <FaEdit />
+                              {product.description}
 
-                            </Link>
+                            </p>
 
-                            {/* Delete */}
+                          </td>
 
-                            <button
-                              onClick={() =>
-                                handleDelete(
-                                  product.id
-                                )
+                          {/* CATEGORY */}
+
+                          <td className="px-6 py-5 font-medium">
+
+                            {product.category}
+
+                          </td>
+
+                          {/* ORIGINAL PRICE */}
+
+                          <td
+                            className="
+                            px-6
+                            py-5
+                            text-gray-500
+                            line-through
+                            "
+                          >
+
+                            ₹ {product.original_price}
+
+                          </td>
+
+                          {/* DISCOUNT PRICE */}
+
+                          <td
+                            className="
+                            px-6
+                            py-5
+                            text-green-600
+                            font-black
+                            "
+                          >
+
+                            ₹ {product.discount_price}
+
+                          </td>
+
+                          {/* FEATURED */}
+
+                          <td className="px-6 py-5">
+
+                            <span
+                              className={`
+                              px-3
+                              py-1
+                              rounded-full
+                              text-sm
+                              font-semibold
+                              ${
+                                product.featured === "Yes"
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-gray-100 text-gray-600"
                               }
-                              className="bg-red-500 text-white p-3 rounded-xl hover:bg-red-600 transition"
+                              `}
                             >
 
-                              <FaTrash />
+                              {product.featured}
 
-                            </button>
+                            </span>
 
-                          </div>
+                          </td>
 
-                        </td>
+                          {/* STATUS */}
 
-                      </tr>
+                          <td className="px-6 py-5">
 
-                    )
+                            <span
+                              className={`
+                              px-3
+                              py-1
+                              rounded-full
+                              text-sm
+                              font-semibold
+                              ${
+                                product.status?.toLowerCase() === "active"
+                                  ? "bg-green-100 text-green-700"
+                                  : "bg-red-100 text-red-700"
+                              }
+                              `}
+                            >
+
+                              {product.status}
+
+                            </span>
+
+                          </td>
+
+                          {/* ACTIONS */}
+
+                          <td className="px-6 py-5">
+
+                            <div className="flex items-center justify-center gap-3">
+
+                              {/* EDIT */}
+
+                              <Link
+                                to={`/admin/edit-product/${product.id}`}
+                                className="
+                                bg-blue-500
+                                text-white
+                                p-3
+                                rounded-xl
+                                hover:bg-blue-600
+                                transition
+                                "
+                              >
+
+                                <FaEdit />
+
+                              </Link>
+
+                              {/* DELETE */}
+
+                              <button
+                                onClick={() =>
+                                  handleDelete(
+                                    product.id
+                                  )
+                                }
+                                className="
+                                bg-red-500
+                                text-white
+                                p-3
+                                rounded-xl
+                                hover:bg-red-600
+                                transition
+                                "
+                              >
+
+                                <FaTrash />
+
+                              </button>
+
+                            </div>
+
+                          </td>
+
+                        </tr>
+
+                      );
+                    }
                   )
 
                 ) : (
@@ -456,7 +566,12 @@ fetchProducts();
 
                     <td
                       colSpan="8"
-                      className="text-center py-16 text-gray-500 text-lg"
+                      className="
+                      text-center
+                      py-16
+                      text-gray-500
+                      text-lg
+                      "
                     >
 
                       No Products Found

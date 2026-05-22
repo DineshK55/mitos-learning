@@ -1,19 +1,32 @@
 // =====================================================
-// MULTER PACKAGE
+// IMPORTS
 // =====================================================
 
-const multer =
-  require("multer");
+const multer = require("multer");
+
+const path = require("path");
+
+const fs = require("fs");
 
 // =====================================================
-// PATH PACKAGE
+// CREATE UPLOADS FOLDER
 // =====================================================
 
-const path =
-  require("path");
+const uploadPath = path.join(
+  __dirname,
+  "../uploads"
+);
+
+if (!fs.existsSync(uploadPath)) {
+
+  fs.mkdirSync(uploadPath, {
+    recursive: true,
+  });
+
+}
 
 // =====================================================
-// STORAGE CONFIGURATION
+// STORAGE CONFIG
 // =====================================================
 
 const storage =
@@ -29,7 +42,8 @@ const storage =
       cb
     ) {
 
-      cb(null, "uploads/");
+      cb(null, uploadPath);
+
     },
 
     // =====================================================
@@ -49,7 +63,9 @@ const storage =
         );
 
       cb(null, uniqueName);
+
     },
+
   });
 
 // =====================================================
@@ -62,15 +78,11 @@ const fileFilter = (
   cb
 ) => {
 
-  // =====================================================
-  // ALLOWED TYPES
-  // =====================================================
-
-  const allowedExtensions =
+  const allowedTypes =
     /jpg|jpeg|png|webp/;
 
-  const extName =
-    allowedExtensions.test(
+  const extname =
+    allowedTypes.test(
       path
         .extname(
           file.originalname
@@ -78,45 +90,30 @@ const fileFilter = (
         .toLowerCase()
     );
 
-  // =====================================================
-  // MIME TYPES
-  // =====================================================
-
-  const allowedMimeTypes = [
-    "image/jpeg",
-    "image/jpg",
-    "image/png",
-    "image/webp",
-  ];
-
-  const mimeType =
-    allowedMimeTypes.includes(
+  const mimetype =
+    allowedTypes.test(
       file.mimetype
     );
 
-  // =====================================================
-  // VALIDATION
-  // =====================================================
-
   if (
-    extName &&
-    mimeType
+    extname &&
+    mimetype
   ) {
 
     return cb(null, true);
 
-  } else {
-
-    return cb(
-      new Error(
-        "Only JPG, JPEG, PNG, WEBP Images Allowed"
-      )
-    );
   }
+
+  cb(
+    new Error(
+      "Only Images Allowed"
+    )
+  );
+
 };
 
 // =====================================================
-// MULTER UPLOAD
+// UPLOAD
 // =====================================================
 
 const upload = multer({
@@ -124,6 +121,7 @@ const upload = multer({
   storage,
 
   fileFilter,
+
 });
 
 // =====================================================

@@ -262,7 +262,7 @@ function AllBanners() {
                 <div className="relative">
 
                   <img
-                    src={`http://localhost:5000/uploads/banners/${banner.image}`}
+                    src={`https://mitos-learning-backend.onrender.com/uploads/banners/${banner.image}`}
                     alt={banner.title}
                     className="w-full h-48 object-cover"
                   />

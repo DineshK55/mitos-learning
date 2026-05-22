@@ -16,6 +16,8 @@ const {
 
 const addProduct = async (req, res) => {
   try {
+
+     console.log(req.file);
     const {
       title,
       description,
@@ -38,19 +40,30 @@ const addProduct = async (req, res) => {
     // VALIDATION
     // =====================================================
 
-    if (
-      !title ||
-      !description ||
-      !original_price ||
-      !discount_price ||
-      !category ||
-      !thumbnail
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Please Fill All Required Fields",
-      });
-    }
+    console.log(req.body);
+
+console.log(req.file);
+
+if (
+  !title ||
+  !description ||
+  !original_price ||
+  !discount_price ||
+  !category
+) {
+
+  return res.status(400).json({
+
+    success: false,
+
+    message:
+      "Please Fill All Required Fields",
+
+  });
+
+}
+
+
 
     // =====================================================
     // CREATE PRODUCT

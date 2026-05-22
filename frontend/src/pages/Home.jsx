@@ -7,6 +7,9 @@ import {
 // Navbar
 import Navbar from "../components/Navbar";
 
+// Footer
+import Footer from "../components/Footer";
+
 // API
 import {
   getAllProducts,
@@ -70,6 +73,8 @@ function Home() {
 
           const response =
             await getAllProducts();
+
+            console.log(response.products);
 
           setProducts(
             response.products || []
@@ -170,7 +175,7 @@ function Home() {
 
       <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
 
-        <h1 className="text-3xl font-bold text-purple-700">
+        <h1 className="text-2xl md:text-3xl font-bold text-purple-700">
 
           Loading Products...
 
@@ -187,31 +192,26 @@ function Home() {
 
   return (
 
-    <div className="bg-[#F8FAFC] min-h-screen">
+    <div className="bg-[#F8FAFC] min-h-screen overflow-x-hidden">
 
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-5">
-
-        {/* ===================================================== */}
-        {/* BANNER */}
-        {/* ===================================================== */}
-
-        <HomeBanner />
+      <div className="max-w-7xl mx-auto px-3 sm:px-5 md:px-6 py-5 md:py-7">
 
         {/* ===================================================== */}
         {/* HEADING */}
         {/* ===================================================== */}
 
-        <div className="text-center mt-8 mb-8">
+        <div className="text-center mb-8 md:mb-10">
 
           <h1
             className="
-            text-3xl
+            text-2xl
+            sm:text-4xl
             md:text-5xl
             font-black
             text-gray-900
-            tracking-tight
+            leading-tight
             "
           >
 
@@ -222,9 +222,9 @@ function Home() {
           <p
             className="
             text-gray-500
-            mt-2
+            mt-3
             text-sm
-            md:text-base
+            sm:text-base
             "
           >
 
@@ -235,18 +235,31 @@ function Home() {
         </div>
 
         {/* ===================================================== */}
+        {/* BANNER */}
+        {/* ===================================================== */}
+
+        <div className="mb-10 md:mb-14">
+
+          <HomeBanner />
+
+        </div>
+
+        {/* ===================================================== */}
         {/* PRODUCT GRID */}
         {/* ===================================================== */}
 
         <div
-          className="
-          grid
-          grid-cols-1
-          md:grid-cols-2
-          lg:grid-cols-3
-          gap-5
-          "
-        >
+  className="
+  grid
+  grid-cols-1
+sm:grid-cols-2
+md:grid-cols-3
+lg:grid-cols-4
+xl:grid-cols-5
+gap-5
+md:gap-6
+  "
+>
 
           {products.map((product) => {
 
@@ -258,20 +271,18 @@ function Home() {
             return (
 
               <ProductCard
-                key={product.id}
-                id={product.id}
-                image={`http://localhost:5000/uploads/${product.thumbnail}`}
-                title={product.title}
-                price={product.discount_price}
-                originalPrice={product.original_price}
-                description={product.description}
-                isSelected={isSelected}
-                onSelect={() =>
-                  handleSelectProduct(
-                    product
-                  )
-                }
-              />
+  key={product.id}
+  id={product.id}
+  image={product.thumbnail}
+  title={product.title}
+  price={product.discount_price}
+  originalPrice={product.original_price}
+  description={product.description}
+  isSelected={isSelected}
+  onSelect={() =>
+    handleSelectProduct(product)
+  }
+/>
 
             );
           })}
@@ -304,13 +315,14 @@ function Home() {
 
           <div
             className="
-            mt-10
+            mt-12 md:mt-16
             bg-white
-            rounded-[28px]
-            shadow-lg
+            rounded-3xl
+            shadow-xl
             border
             border-gray-100
             p-5
+            md:p-7
             "
           >
 
@@ -319,9 +331,12 @@ function Home() {
             <div
               className="
               flex
-              items-center
-              justify-between
-              mb-5
+              flex-col
+              md:flex-row
+              md:items-center
+              md:justify-between
+              gap-4
+              mb-6
               "
             >
 
@@ -330,6 +345,7 @@ function Home() {
                 <h2
                   className="
                   text-2xl
+                  md:text-3xl
                   font-black
                   text-gray-900
                   "
@@ -356,6 +372,7 @@ function Home() {
                 rounded-2xl
                 font-bold
                 text-sm
+                w-fit
                 "
               >
 
@@ -367,7 +384,7 @@ function Home() {
 
             {/* PRODUCTS */}
 
-            <div className="space-y-3">
+            <div className="space-y-4">
 
               {selectedProductsData.map(
                 (product, index) => (
@@ -377,11 +394,13 @@ function Home() {
                     className="
                     bg-[#F8FAFC]
                     rounded-2xl
-                    px-4
-                    py-3
+                    p-4
                     flex
-                    items-center
-                    justify-between
+                    flex-col
+                    md:flex-row
+                    md:items-center
+                    md:justify-between
+                    gap-4
                     border
                     border-gray-100
                     "
@@ -414,14 +433,16 @@ function Home() {
 
                       {/* IMAGE */}
 
-                      <img
-                        src={`http://localhost:5000/uploads/${product.thumbnail}`}
+                     <img src={`http://localhost:5000/uploads/${product.thumbnail}`}
                         alt={product.title}
                         className="
-                        w-16
-                        h-16
+                        w-14
+                        h-14
+                        md:w-16
+                        md:h-16
                         rounded-xl
                         object-cover
+                        border
                         "
                       />
 
@@ -431,7 +452,8 @@ function Home() {
 
                         <h3
                           className="
-                          text-lg
+                          text-base
+                          md:text-lg
                           font-bold
                           text-gray-900
                           "
@@ -458,9 +480,9 @@ function Home() {
 
                     </div>
 
-                    {/* REMOVE */}
+                    {/* REMOVE 
 
-                    <button
+                    //<button
                       onClick={() =>
                         handleSelectProduct(
                           product
@@ -477,12 +499,14 @@ function Home() {
                       font-semibold
                       transition-all
                       duration-300
+                      w-full
+                      md:w-auto
                       "
                     >
 
                       Remove
 
-                    </button>
+                    </button>*/}
 
                   </div>
 
@@ -495,13 +519,16 @@ function Home() {
 
             <div
               className="
-              mt-6
-              pt-5
+              mt-8
+              pt-6
               border-t
               border-gray-200
               flex
-              items-center
-              justify-between
+              flex-col
+              md:flex-row
+              md:items-center
+              md:justify-between
+              gap-4
               "
             >
 
@@ -529,7 +556,8 @@ function Home() {
 
               <h2
                 className="
-                text-3xl
+                text-2xl
+                md:text-3xl
                 font-black
                 text-purple-700
                 "
@@ -548,12 +576,16 @@ function Home() {
                 navigate("/checkout")
               }
               className="
+              w-full
+              md:w-auto
               mt-6
               bg-purple-700
               hover:bg-purple-800
               text-white
-              px-8
-              py-3.5
+              px-6
+              md:px-8
+              py-3
+              md:py-3.5
               rounded-2xl
               font-bold
               text-base
@@ -573,7 +605,11 @@ function Home() {
 
       </div>
 
+        <Footer />
+
     </div>
+
+    
 
   );
 }

@@ -11,16 +11,16 @@ import {
 import {
   Autoplay,
   Pagination,
-  EffectFade,
 } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
-import "swiper/css/effect-fade";
 
 import {
   getAllBanners,
 } from "../services/bannerService";
+
+import { BACKEND_URL } from "../services/api";
 
 function HomeBanner() {
 
@@ -57,6 +57,7 @@ function HomeBanner() {
       } catch (error) {
 
         console.log(error);
+
       }
     };
 
@@ -76,31 +77,35 @@ function HomeBanner() {
 
   return (
 
-    <div className="w-full px-5 md:px-10 mt-8">
+    <div
+      className="
+      w-full
+      max-w-5xl
+      mx-auto
+      mt-6
+      px-4
+      "
+    >
 
       <Swiper
         modules={[
           Autoplay,
           Pagination,
-          EffectFade,
         ]}
         slidesPerView={1}
         loop={true}
-        speed={1800}
-        effect="fade"
+        speed={1200}
         autoplay={{
-          delay: 2500,
+          delay: 3000,
           disableOnInteraction: false,
         }}
         pagination={{
           clickable: true,
         }}
         className="
-        rounded-[42px]
+        rounded-3xl
         overflow-hidden
-        shadow-2xl
-        border
-        border-white/10
+        shadow-xl
         "
       >
 
@@ -121,63 +126,56 @@ function HomeBanner() {
                 className="
                 relative
                 w-full
-                h-[260px]
-                md:h-[420px]
+                h-[170px]
+                sm:h-[190px]
+                md:h-[220px]
+                lg:h-[260px]
                 cursor-pointer
                 overflow-hidden
                 group
                 "
               >
 
-                {/* Background Image */}
+                {/* ===================================================== */}
+                {/* IMAGE */}
+                {/* ===================================================== */}
 
                 <img
-                  src={`http://localhost:5000/uploads/banners/${banner.image}`}
+                  src={`${BACKEND_URL}/uploads/banners/${banner.image}`}
                   alt={banner.title}
                   className="
                   w-full
                   h-full
                   object-cover
-                  scale-100
-                  group-hover:scale-110
                   transition-all
-                  duration-[6000ms]
+                  duration-700
+                  group-hover:scale-105
                   "
                 />
 
-                {/* Dark Overlay */}
+                {/* ===================================================== */}
+                {/* DARK OVERLAY */}
+                {/* ===================================================== */}
 
                 <div
                   className="
                   absolute
                   inset-0
-                  bg-black/20
+                  bg-black/10
                   "
                 />
-
-                {/* Glass Effect */}
-
-                <div
-                  className="
-                  absolute
-                  inset-0
-                  backdrop-blur-[1px]
-                  "
-                />
-
-                
-
-                
 
               </div>
 
             </SwiperSlide>
+
           )
         )}
 
       </Swiper>
 
     </div>
+
   );
 }
 

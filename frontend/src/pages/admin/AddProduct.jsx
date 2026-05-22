@@ -66,36 +66,31 @@ function AddProduct() {
   // =====================================================
 
   const handleImageChange = (
-    e
-  ) => {
+  e
+) => {
 
-    const file =
-      e.target.files[0];
+  const file =
+    e.target.files[0];
 
-    if (!file) {
-      return;
-    }
+  console.log(file);
 
-    // =====================================================
-    // IMAGE VALIDATION
-    // =====================================================
+  if (!file) {
 
-    if (
-      !file.type.startsWith(
-        "image/"
-      )
-    ) {
+    toast.error(
+      "No File Selected"
+    );
 
-      toast.error(
-        "Please Select Image File"
-      );
+    return;
+  }
 
-      return;
-    }
+  setThumbnail(file);
 
-    setThumbnail(file);
-  };
+  console.log(
+    "IMAGE SET:",
+    file
+  );
 
+};
   // =====================================================
   // HANDLE SUBMIT
   // =====================================================
@@ -105,6 +100,7 @@ function AddProduct() {
   ) => {
 
     e.preventDefault();
+    console.log(thumbnail);
 
     // =====================================================
     // VALIDATION
@@ -450,13 +446,13 @@ function AddProduct() {
                 Product Image
               </label>
 
-              <input
-                type="file"
-                onChange={
-                  handleImageChange
-                }
-                className="w-full border border-gray-300 rounded-2xl px-4 py-3 bg-white"
-              />
+          <input
+  type="file"
+  name="thumbnail"
+  accept="image/*"
+  onChange={handleImageChange}
+  className="w-full border border-gray-300 rounded-2xl px-4 py-3 bg-white"
+/>
 
             </div>
 

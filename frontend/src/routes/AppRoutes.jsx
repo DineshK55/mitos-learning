@@ -17,6 +17,10 @@ import ForgotPassword from "../pages/ForgotPassword";
 import OTPVerification from "../pages/OTPVerification";
 import ResetPassword from "../pages/ResetPassword";
 
+// ================= NEW USER PAGES =================
+
+import Profile from "../pages/Profile";
+import Orders from "../pages/Orders";
 
 // ================= ADMIN PAGES =================
 
@@ -30,7 +34,6 @@ import AddProduct from "../pages/admin/AddProduct";
 import EditProduct from "../pages/admin/EditProduct";
 import AddBanner from "../pages/admin/AddBanner";
 import AllBanners from "../pages/admin/AllBanners";
-
 
 function AppRoutes() {
 
@@ -99,6 +102,28 @@ function AppRoutes() {
         }
       />
 
+      {/* ================= PROFILE ================= */}
+
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ================= ORDERS ================= */}
+
+      <Route
+        path="/orders"
+        element={
+          <ProtectedRoute>
+            <Orders />
+          </ProtectedRoute>
+        }
+      />
+
       {/* ===================================================== */}
       {/* ADMIN LOGIN */}
       {/* ===================================================== */}
@@ -149,13 +174,13 @@ function AppRoutes() {
       />
 
       <Route
-  path="/admin/users/:id"
-  element={
-    <AdminProtectedRoute>
-      <SingleUser />
-    </AdminProtectedRoute>
-  }
-/>
+        path="/admin/users/:id"
+        element={
+          <AdminProtectedRoute>
+            <SingleUser />
+          </AdminProtectedRoute>
+        }
+      />
 
       <Route
         path="/admin/add-product"
@@ -175,23 +200,23 @@ function AppRoutes() {
         }
       />
 
-     <Route
-  path="/admin/add-banner"
-  element={
-    <AdminProtectedRoute>
-      <AddBanner />
-    </AdminProtectedRoute>
-  }
-/>
+      <Route
+        path="/admin/add-banner"
+        element={
+          <AdminProtectedRoute>
+            <AddBanner />
+          </AdminProtectedRoute>
+        }
+      />
 
-<Route
-  path="/admin/banners"
-  element={
-    <AdminProtectedRoute>
-      <AllBanners />
-    </AdminProtectedRoute>
-  }
-/>
+      <Route
+        path="/admin/banners"
+        element={
+          <AdminProtectedRoute>
+            <AllBanners />
+          </AdminProtectedRoute>
+        }
+      />
 
     </Routes>
   );

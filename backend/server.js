@@ -43,11 +43,6 @@ const bannerRoutes = require("./routes/bannerRoutes");
 const app = express();
 
 // =====================================================
-// DEBUG ENV VALUES
-// =====================================================
-
-
-// =====================================================
 // MIDDLEWARES
 // =====================================================
 
@@ -62,15 +57,27 @@ app.use(
 );
 
 // =====================================================
-// STATIC FOLDER
+// STATIC FOLDER SERVING
 // =====================================================
+
+const uploadsPath = path.join(
+  __dirname,
+  "uploads"
+);
 
 app.use(
   "/uploads",
-  express.static(
-    path.join(__dirname, "uploads")
-  )
+  express.static(uploadsPath)
 );
+
+console.log("UPLOAD PATH:", uploadsPath);
+
+
+app.get("/check-upload", (req, res) => {
+
+  res.send("UPLOAD ROUTE WORKING");
+
+});
 
 // =====================================================
 // API ROUTES
@@ -137,20 +144,46 @@ app.use(
 // =====================================================
 
 app.get("/", (req, res) => {
+
   res.send(
     "Mitos Learning Backend Running..."
   );
+
 });
+
+// =====================================================
+// IMAGE TEST ROUTE
+// =====================================================
+
+app.get(
+  "/test-image",
+  (req, res) => {
+
+    res.sendFile(
+      path.join(
+        __dirname,
+        "uploads",
+        "test.jpg"
+      )
+    );
+
+  }
+);
 
 // =====================================================
 // 404 ROUTE HANDLER
 // =====================================================
 
 app.use((req, res) => {
+
   res.status(404).json({
+
     success: false,
+
     message: "Route Not Found",
+
   });
+
 });
 
 // =====================================================
@@ -161,7 +194,9 @@ const PORT =
   process.env.PORT || 5000;
 
 app.listen(PORT, () => {
+
   console.log(
     `Server running on port ${PORT}`
   );
+
 });

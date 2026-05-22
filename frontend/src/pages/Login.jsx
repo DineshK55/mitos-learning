@@ -6,6 +6,13 @@ import { useNavigate } from "react-router-dom";
 // Toast
 import { toast } from "react-toastify";
 
+// Icons
+import {
+  Mail,
+  ShieldCheck,
+  ArrowLeft,
+} from "lucide-react";
+
 // Context
 import { AuthContext } from "../context/AuthContext";
 
@@ -16,6 +23,7 @@ import {
 } from "../services/authService";
 
 const Login = () => {
+
   // Navigate
   const navigate = useNavigate();
 
@@ -24,9 +32,6 @@ const Login = () => {
     useContext(AuthContext);
 
   // ================= STATES =================
-
-  const [loginType, setLoginType] =
-    useState("phone");
 
   const [loginId, setLoginId] =
     useState("");
@@ -43,16 +48,19 @@ const Login = () => {
   // ================= SEND OTP =================
 
   const handleSendOTP = async (e) => {
+
     e.preventDefault();
 
     // Validation
     if (!loginId.trim()) {
+
       return toast.error(
-        "Please Enter Login Details"
+        "Please Enter Email Address"
       );
     }
 
     try {
+
       setLoading(true);
 
       const data =
@@ -68,14 +76,18 @@ const Login = () => {
 
       // Show OTP Box
       setShowOTPBox(true);
+
     } catch (error) {
+
       console.log(error);
 
       toast.error(
         error?.message ||
           "Failed To Send OTP"
       );
+
     } finally {
+
       setLoading(false);
     }
   };
@@ -83,16 +95,19 @@ const Login = () => {
   // ================= VERIFY OTP =================
 
   const handleVerifyOTP = async (e) => {
+
     e.preventDefault();
 
     // OTP Validation
     if (otp.length !== 6) {
+
       return toast.error(
         "Enter Valid 6 Digit OTP"
       );
     }
 
     try {
+
       setLoading(true);
 
       const data =
@@ -111,123 +126,117 @@ const Login = () => {
 
       // Redirect Home
       navigate("/");
+
     } catch (error) {
+
       console.log(error);
 
       toast.error(
         error?.message ||
           "Invalid OTP"
       );
+
     } finally {
+
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
 
-      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-purple-50 to-white flex items-center justify-center px-4 py-10">
 
-        {/* Heading */}
-        <h2 className="text-3xl font-bold text-center text-purple-700 mb-2">
-          Student Login
-        </h2>
+      {/* LOGIN CARD */}
+      <div className="w-full max-w-md bg-white/90 backdrop-blur-xl border border-white shadow-2xl rounded-[32px] p-6 sm:p-10">
 
-        <p className="text-center text-gray-500 mb-8">
-          Login To Continue
-        </p>
+        {/* TOP ICON */}
+        <div className="flex justify-center mb-5">
 
-        {/* ================= LOGIN TYPE ================= */}
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-violet-700 flex items-center justify-center shadow-xl">
 
-        {!showOTPBox && (
-          <div className="flex items-center justify-center gap-6 mb-6">
+            {showOTPBox ? (
 
-            {/* Phone */}
-            <label className="flex items-center gap-2 cursor-pointer">
-
-              <input
-                type="radio"
-                value="phone"
-                checked={loginType === "phone"}
-                onChange={() =>
-                  setLoginType("phone")
-                }
+              <ShieldCheck
+                size={38}
+                className="text-white"
               />
 
-              <span>
-                Phone Number
-              </span>
+            ) : (
 
-            </label>
-
-            {/* Email */}
-            <label className="flex items-center gap-2 cursor-pointer">
-
-              <input
-                type="radio"
-                value="email"
-                checked={loginType === "email"}
-                onChange={() =>
-                  setLoginType("email")
-                }
+              <Mail
+                size={38}
+                className="text-white"
               />
-
-              <span>
-                Email
-              </span>
-
-            </label>
+            )}
 
           </div>
-        )}
+
+        </div>
+
+        {/* HEADING */}
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-center text-gray-900 leading-tight">
+
+          {showOTPBox
+            ? "Verify OTP"
+            : "Student Login"}
+
+        </h2>
+
+        <p className="text-center text-gray-500 mt-3 mb-8 text-sm sm:text-base">
+
+          {showOTPBox
+            ? "Enter the OTP sent to your email"
+            : "Secure Login Using Email OTP"}
+
+        </p>
 
         {/* ================= SEND OTP FORM ================= */}
 
         {!showOTPBox ? (
+
           <form
             onSubmit={handleSendOTP}
-            className="space-y-5"
+            className="space-y-6"
           >
 
-            {/* Input */}
+            {/* EMAIL INPUT */}
             <div>
 
-              <label className="block mb-2 font-medium">
+              <label className="block mb-3 text-sm font-semibold text-gray-700">
 
-                {loginType === "phone"
-                  ? "Phone Number"
-                  : "Email Address"}
+                Email Address
 
               </label>
 
-              <input
-                type={
-                  loginType === "phone"
-                    ? "text"
-                    : "email"
-                }
-                value={loginId}
-                onChange={(e) =>
-                  setLoginId(
-                    e.target.value
-                  )
-                }
-                placeholder={
-                  loginType === "phone"
-                    ? "Enter Phone Number"
-                    : "Enter Email Address"
-                }
-                required
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-purple-600"
-              />
+              <div className="relative">
+
+                <Mail
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+
+                <input
+                  type="email"
+                  value={loginId}
+                  onChange={(e) =>
+                    setLoginId(
+                      e.target.value
+                    )
+                  }
+                  placeholder="Enter Your Email"
+                  required
+                  className="w-full h-14 rounded-2xl border border-gray-200 bg-gray-50 pl-12 pr-4 text-gray-800 outline-none focus:border-purple-600 focus:bg-white transition"
+                />
+
+              </div>
 
             </div>
 
-            {/* Button */}
+            {/* BUTTON */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-purple-700 hover:bg-purple-800 text-white py-3 rounded-lg font-semibold transition disabled:opacity-70"
+              className="w-full h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-violet-700 hover:scale-[1.02] hover:shadow-xl transition-all duration-300 text-white font-bold text-lg disabled:opacity-70"
             >
 
               {loading
@@ -237,33 +246,38 @@ const Login = () => {
             </button>
 
           </form>
+
         ) : (
 
           // ================= OTP VERIFY FORM =================
 
           <form
             onSubmit={handleVerifyOTP}
-            className="space-y-5"
+            className="space-y-6"
           >
 
-            {/* Info */}
-            <div className="text-center">
+            {/* EMAIL INFO */}
+            <div className="bg-purple-50 border border-purple-100 rounded-2xl p-4 text-center">
 
-              <p className="text-gray-600 text-sm">
-                OTP Sent Successfully
+              <p className="text-sm text-gray-600">
+                OTP Sent To
               </p>
 
-              <p className="font-semibold text-purple-700 mt-1">
+              <p className="text-purple-700 font-bold mt-1 break-all">
+
                 {loginId}
+
               </p>
 
             </div>
 
-            {/* OTP Input */}
+            {/* OTP INPUT */}
             <div>
 
-              <label className="block mb-2 font-medium">
+              <label className="block mb-3 text-sm font-semibold text-gray-700">
+
                 Enter OTP
+
               </label>
 
               <input
@@ -274,19 +288,19 @@ const Login = () => {
                     e.target.value
                   )
                 }
-                placeholder="Enter 6 Digit OTP"
+                placeholder="------"
                 required
                 maxLength={6}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-purple-600 text-center tracking-widest text-xl"
+                className="w-full h-16 rounded-2xl border border-gray-200 bg-gray-50 text-center text-2xl tracking-[10px] font-bold outline-none focus:border-purple-600 focus:bg-white transition"
               />
 
             </div>
 
-            {/* Verify Button */}
+            {/* VERIFY BUTTON */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition disabled:opacity-70"
+              className="w-full h-14 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 hover:scale-[1.02] hover:shadow-xl transition-all duration-300 text-white font-bold text-lg disabled:opacity-70"
             >
 
               {loading
@@ -295,17 +309,21 @@ const Login = () => {
 
             </button>
 
-            {/* Change Login */}
+            {/* BACK BUTTON */}
             <button
               type="button"
               onClick={() => {
+
                 setShowOTPBox(false);
+
                 setOTP("");
               }}
-              className="w-full border border-gray-300 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
+              className="w-full h-14 rounded-2xl border border-gray-200 hover:bg-gray-50 transition flex items-center justify-center gap-2 font-semibold text-gray-700"
             >
 
-              Change Email / Phone
+              <ArrowLeft size={18} />
+
+              Change Email
 
             </button>
 

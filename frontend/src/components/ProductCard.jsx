@@ -1,5 +1,9 @@
 import { useNavigate } from "react-router-dom";
 
+import {
+  BACKEND_URL,
+} from "../services/api";
+
 function ProductCard({
   id,
   image,
@@ -11,7 +15,8 @@ function ProductCard({
   onSelect,
 }) {
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   // =====================================================
   // DISCOUNT PERCENTAGE
@@ -26,75 +31,112 @@ function ProductCard({
         )
       : 0;
 
+  // =====================================================
+  // IMAGE URL FIX
+  // =====================================================
+
+  const imageUrl =
+    image
+      ? image.startsWith("http")
+        ? image
+        : `${BACKEND_URL}/uploads/products/${image}`
+      : "https://placehold.co/600x400?text=No+Image";
+
   return (
 
     <div
       className={`
       bg-white
-      rounded-[28px]
+      rounded-[22px]
       overflow-hidden
       transition-all
       duration-300
       border
-      shadow-md
-      hover:shadow-2xl
+      shadow-sm
+      hover:shadow-xl
       hover:-translate-y-1
+      flex
+      flex-col
+      h-full
+      group
       ${
         isSelected
-          ? "border-purple-600 ring-2 ring-purple-200"
-          : "border-gray-200"
+          ? "border-purple-600 ring-2 ring-purple-100"
+          : "border-gray-100"
       }
       `}
     >
 
       {/* ===================================================== */}
-      {/* PRODUCT IMAGE */}
+      {/* IMAGE */}
       {/* ===================================================== */}
 
-      <div className="relative">
+      <div
+        className="
+        relative
+        w-full
+        h-40
+        overflow-hidden
+        bg-gray-100
+        "
+      >
 
         <img
-          src={image}
+          src={imageUrl}
           alt={title}
           className="
           w-full
-          h-52
+          h-full
           object-cover
+          transition-transform
+          duration-500
+          group-hover:scale-105
           "
+          onError={(e) => {
+
+            e.target.src =
+              "https://placehold.co/600x400?text=No+Image";
+
+          }}
         />
 
         {/* ===================================================== */}
-        {/* CHECKBOX */}
+        {/* SELECT BUTTON */}
         {/* ===================================================== */}
 
         <button
           onClick={() => onSelect(id)}
           className={`
           absolute
-          top-4
-          right-4
-          w-9
-          h-9
-          rounded-xl
-          border-2
+          top-3
+          right-3
+          w-8
+          h-8
+          rounded-2xl
+          border
           flex
           items-center
           justify-center
           transition-all
           duration-300
+          backdrop-blur-md
           shadow-md
           ${
             isSelected
-              ? "bg-purple-700 border-purple-700"
-              : "bg-white border-white/80 backdrop-blur-md"
+              ? "bg-purple-700 border-purple-700 text-white"
+              : "bg-white/90 border-white"
           }
           `}
         >
 
           {isSelected && (
-            <span className="text-white text-lg font-bold">
+
+            <span className="text-xs font-bold">
+
               ✓
+
             </span>
+
           )}
 
         </button>
@@ -102,76 +144,102 @@ function ProductCard({
       </div>
 
       {/* ===================================================== */}
-      {/* PRODUCT DETAILS */}
+      {/* CONTENT */}
       {/* ===================================================== */}
 
-      <div className="p-5">
+      <div
+        className="
+        p-4
+        flex
+        flex-col
+        flex-grow
+        "
+      >
 
+        {/* ===================================================== */}
         {/* TITLE */}
+        {/* ===================================================== */}
 
         <h2
           className="
-          text-[32px]
-          md:text-[34px]
-          font-bold
+          text-[18px]
+          md:text-[20px]
+          font-black
           text-gray-900
-          leading-tight
+          leading-snug
+          line-clamp-2
+          min-h-[58px]
+          tracking-tight
           "
         >
+
           {title}
+
         </h2>
 
+        {/* ===================================================== */}
         {/* DESCRIPTION */}
+        {/* ===================================================== */}
 
         <p
           className="
           text-gray-500
-          text-sm
+          text-[13px]
           mt-2
           line-clamp-2
-          leading-relaxed
+          leading-6
+          min-h-[48px]
           "
         >
+
           {description}
+
         </p>
 
         {/* ===================================================== */}
-        {/* PRICE SECTION */}
+        {/* PRICE */}
         {/* ===================================================== */}
 
-        <div className="mt-5">
-
-          {/* ORIGINAL PRICE */}
+        <div className="mt-4">
 
           {originalPrice && (
+
             <p
               className="
               text-gray-400
               line-through
-              text-lg
-              font-medium
+              text-xs
               "
             >
+
               ₹ {originalPrice}
+
             </p>
+
           )}
 
-          {/* CURRENT PRICE */}
-
-          <div className="flex items-center gap-3 mt-1">
+          <div
+            className="
+            flex
+            items-center
+            gap-2
+            mt-1
+            flex-wrap
+            "
+          >
 
             <h3
               className="
               text-purple-700
-              text-4xl
-              font-extrabold
+              text-3xl
+              font-black
               tracking-tight
               "
             >
-              ₹ {price}
-            </h3>
 
-            {/* DISCOUNT BADGE */}
+              ₹ {price}
+
+            </h3>
 
             {discountPercentage > 0 && (
 
@@ -179,14 +247,16 @@ function ProductCard({
                 className="
                 bg-green-100
                 text-green-700
-                text-sm
-                font-semibold
-                px-3
+                text-[11px]
+                font-bold
+                px-2.5
                 py-1
                 rounded-full
                 "
               >
+
                 {discountPercentage}% OFF
+
               </span>
 
             )}
@@ -205,26 +275,30 @@ function ProductCard({
           }
           className="
           w-full
-          mt-6
+          mt-5
           bg-purple-700
           hover:bg-purple-800
           text-white
-          py-3
-          rounded-2xl
+          py-2.5
+          rounded-xl
           font-semibold
-          text-base
+          text-sm
           transition-all
           duration-300
-          shadow-lg
+          shadow-md
           hover:shadow-purple-300
+          active:scale-[0.98]
           "
         >
+
           View Details
+
         </button>
 
       </div>
 
     </div>
+
   );
 }
 
