@@ -1,4 +1,7 @@
-import { useState } from "react";
+import {
+  useState,
+  useEffect,
+} from "react";
 
 import {
   useNavigate,
@@ -6,213 +9,473 @@ import {
 
 import { toast } from "react-toastify";
 
-// Icons
+// ======================================================
+// ICONS
+// ======================================================
+
 import {
   MapPin,
   ShoppingBag,
   CreditCard,
 } from "lucide-react";
 
-// Order Service
+// ======================================================
+// ORDER SERVICE
+// ======================================================
+
 import {
   createOrder,
 } from "../services/orderService";
 
+// ======================================================
+// COMPONENTS
+// ======================================================
 
-
-// Navbar
 import Navbar from "../components/Navbar";
 
-// Footer
 import Footer from "../components/Footer";
 
-// Cart Context
+// ======================================================
+// CART CONTEXT
+// ======================================================
+
 import {
   useCart,
 } from "../context/CartContext";
 
 function Checkout() {
 
-  // Navigate
-  const navigate = useNavigate();
+  // ======================================================
+  // NAVIGATE
+  // ======================================================
 
-  // ================= CART =================
+  const navigate =
+    useNavigate();
+
+  // ======================================================
+  // CART CONTEXT
+  // ======================================================
 
   const {
-    cartItems,
-    totalPrice,
+
+    finalCartItems:
+      contextCartItems,
+
+    totalPrice:
+      contextTotalPrice,
+
   } = useCart();
 
-  // ================= ADDRESS STATE =================
+  // ======================================================
+  // STATES
+  // ======================================================
 
-  const [shippingData, setShippingData] =
-    useState({
-      fullName: "",
-      mobile: "",
-      email: "",
-      address: "",
-      city: "",
-      state: "",
-      pincode: "",
-    });
+  const [
+    finalCartItems,
+    setFinalCartItems,
+  ] = useState([]);
 
-  // ================= LOADING =================
+  const [
+    finalTotalPrice,
+    setFinalTotalPrice,
+  ] = useState(0);
 
-  const [loading, setLoading] =
-    useState(false);
+  // ======================================================
+  // LOAD PRODUCTS
+  // ======================================================
 
-  // ================= HANDLE CHANGE =================
+  useEffect(() => {
 
-  const handleChange = (e) => {
+    const savedProducts =
+      JSON.parse(
+        localStorage.getItem(
+          "checkoutProduct"
+        )
+      ) || [];
 
-    setShippingData({
-      ...shippingData,
-      [e.target.name]:
-        e.target.value,
-    });
+    // ======================================================
+    // BUY NOW FLOW
+    // ======================================================
 
-  };
-
-  // ================= HANDLE PAYMENT =================
-
-  const handlePayment = async () => {
-
-    // Empty Cart
-    if (cartItems.length === 0) {
-
-      return toast.error(
-        "Your Cart Is Empty"
-      );
-    }
-
-    // Validation
     if (
-      !shippingData.fullName.trim() ||
-      !shippingData.mobile.trim() ||
-      !shippingData.email.trim() ||
-      !shippingData.address.trim() ||
-      !shippingData.city.trim() ||
-      !shippingData.state.trim() ||
-      !shippingData.pincode.trim()
+      savedProducts.length > 0
     ) {
 
-      return toast.error(
-        "Please Fill All Address Details"
+      setFinalCartItems(
+        savedProducts
       );
-    }
 
-    try {
+      const total =
+        savedProducts.reduce(
 
-      setLoading(true);
+          (
+            total,
+            item
+          ) =>
 
-      // Order Data
-      const orderData = {
-        products: cartItems,
-        shippingAddress:
-          shippingData,
-        totalAmount:
-          totalPrice,
-      };
+            total +
+            Number(
+              item.discount_price || 0
+            ),
 
-      // Create Order API
-      const data =
-        await createOrder(
-          orderData
+          0
         );
 
-      console.log(data);
-
-      // Success Toast
-      toast.success(
-        "Order Created Successfully"
+      setFinalTotalPrice(
+        total
       );
-
-      // Future PayU Redirect
-      navigate(
-        "/order-success"
-      );
-
-    } catch (error) {
-
-      console.log(error);
-
-      toast.error(
-        error?.message ||
-          "Order Failed"
-      );
-
-    } finally {
-
-      setLoading(false);
 
     }
-  };
+
+    // ======================================================
+    // CART FLOW
+    // ======================================================
+
+    else {
+
+      setFinalCartItems(
+        contextCartItems
+      );
+
+      setFinalTotalPrice(
+        contextTotalPrice
+      );
+
+    }
+
+  }, [
+    contextCartItems,
+    contextTotalPrice,
+  ]);
+
+  // ======================================================
+  // SHIPPING STATE
+  // ======================================================
+
+  const [
+    shippingData,
+    setShippingData,
+  ] = useState({
+
+    fullName: "",
+
+    mobile: "",
+
+    email: "",
+
+    address: "",
+
+    city: "",
+
+    state: "",
+
+    pincode: "",
+
+  });
+
+  // ======================================================
+  // LOADING
+  // ======================================================
+
+  const [
+    loading,
+    setLoading,
+  ] = useState(false);
+
+  // ======================================================
+  // HANDLE CHANGE
+  // ======================================================
+
+  const handleChange =
+    (e) => {
+
+      setShippingData({
+
+        ...shippingData,
+
+        [e.target.name]:
+          e.target.value,
+
+      });
+
+    };
+
+  // ======================================================
+  // HANDLE PAYMENT
+  // ======================================================
+
+  const handlePayment =
+    async () => {
+
+      // ======================================================
+      // EMPTY CART
+      // ======================================================
+
+      if (
+        finalCartItems.length === 0
+      ) {
+
+        return toast.error(
+          "Your Cart Is Empty"
+        );
+
+      }
+
+      // ======================================================
+      // VALIDATION
+      // ======================================================
+
+      if (
+
+        !shippingData.fullName.trim() ||
+
+        !shippingData.mobile.trim() ||
+
+        !shippingData.email.trim() ||
+
+        !shippingData.address.trim() ||
+
+        !shippingData.city.trim() ||
+
+        !shippingData.state.trim() ||
+
+        !shippingData.pincode.trim()
+
+      ) {
+
+        return toast.error(
+          "Please Fill All Address Details"
+        );
+
+      }
+
+      try {
+
+        setLoading(true);
+
+        // ======================================================
+        // ORDER DATA
+        // ======================================================
+
+        const orderData = {
+
+          products:
+            finalCartItems,
+
+          shippingAddress:
+            shippingData,
+
+          totalAmount:
+            finalTotalPrice,
+
+        };
+
+        // ======================================================
+        // CREATE ORDER
+        // ======================================================
+
+        const data =
+          await createOrder(
+            orderData
+          );
+
+        console.log(data);
+
+        toast.success(
+          "Order Created Successfully"
+        );
+
+        // ======================================================
+        // CLEAR BUY NOW STORAGE
+        // ======================================================
+
+        localStorage.removeItem(
+          "checkoutProduct"
+        );
+
+        // ======================================================
+        // SUCCESS PAGE
+        // ======================================================
+
+        navigate(
+          "/order-success"
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+        toast.error(
+
+          error?.message ||
+
+          "Order Failed"
+
+        );
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    };
+
+  // ======================================================
+  // UI
+  // ======================================================
 
   return (
 
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-purple-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-[#F8FAFC] via-purple-50 to-white">
 
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
 
-        {/* ================= HEADING ================= */}
+        {/* ====================================================== */}
+        {/* HEADING */}
+        {/* ====================================================== */}
 
-        <div className="text-center mb-10">
+        <div className="text-center mb-12">
 
-          <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-r from-purple-600 to-violet-700 flex items-center justify-center shadow-xl">
+          <div
+            className="
+            w-24
+            h-24
+            mx-auto
+            rounded-full
+            bg-gradient-to-r
+            from-purple-700
+            to-violet-500
+            flex
+            items-center
+            justify-center
+            shadow-[0_12px_40px_rgba(124,58,237,0.30)]
+            "
+          >
 
             <ShoppingBag
-              size={36}
+              size={40}
               className="text-white"
             />
 
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-gray-900 mt-5">
+          <h1
+            className="
+            text-4xl
+            sm:text-5xl
+            font-black
+            text-gray-900
+            mt-6
+            "
+          >
 
-            Checkout
+            Secure Checkout
 
           </h1>
 
-          <p className="text-gray-500 mt-3">
+          <p
+            className="
+            text-gray-500
+            mt-3
+            text-lg
+            "
+          >
 
-            Complete Your Premium Order
+            Complete Your Premium NEET Order
 
           </p>
 
         </div>
 
-        {/* ================= MAIN GRID ================= */}
+        {/* ====================================================== */}
+        {/* MAIN GRID */}
+        {/* ====================================================== */}
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start">
+    <div className="space-y-10">
 
-          {/* ================= LEFT SIDE ================= */}
+  {/* TITLE */}
 
-          <div>
+         
 
-            <div className="flex items-center gap-3 mb-6">
+         {/* ====================================================== */}
+{/* PRODUCTS SECTION */}
+{/* ====================================================== */}
 
-              <ShoppingBag
-                size={28}
-                className="text-purple-700"
-              />
+<div className="space-y-6">
 
-              <h2 className="text-2xl md:text-3xl font-black text-gray-900">
+            {/* TITLE */}
 
-                Selected Test Series
+            <div className="flex items-center gap-3 mb-7">
 
-              </h2>
+              <div
+                className="
+                w-12
+                h-12
+                rounded-2xl
+                bg-purple-100
+                flex
+                items-center
+                justify-center
+                "
+              >
+
+                <ShoppingBag
+                  size={24}
+                  className="text-purple-700"
+                />
+
+              </div>
+
+              <div>
+
+                <h2
+                  className="
+                  text-3xl
+                  font-black
+                  text-gray-900
+                  "
+                >
+
+                  Selected Test Series
+
+                </h2>
+
+                <p className="text-gray-500 text-sm mt-1">
+
+                  Review your selected products
+
+                </p>
+
+              </div>
 
             </div>
 
-            {/* Empty Cart */}
+            {/* EMPTY */}
 
-            {cartItems.length === 0 ? (
+            {finalCartItems.length === 0 ? (
 
-              <div className="bg-white rounded-[28px] shadow-xl border border-gray-100 p-10 text-center">
+              <div
+                className="
+                bg-white
+                rounded-[32px]
+                shadow-xl
+                border
+                border-gray-100
+                p-12
+                text-center
+                "
+              >
 
-                <h2 className="text-2xl font-bold text-gray-700">
+                <h2
+                  className="
+                  text-2xl
+                  font-bold
+                  text-gray-700
+                  "
+                >
 
                   Your Cart Is Empty
 
@@ -224,20 +487,51 @@ function Checkout() {
 
               <div className="space-y-5">
 
-                {cartItems.map((product, index) => (
+                {finalCartItems.map(
 
-                  <div
-                    key={product.id}
-                    className="bg-white rounded-[28px] shadow-lg border border-gray-100 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-5"
-                  >
+                  (
+                    product,
+                    index
+                  ) => (
 
-                    {/* LEFT SIDE */}
-
-                    <div className="flex items-center gap-4 w-full">
+                    <div
+                      key={product.id}
+                      className="
+                    bg-white
+                      rounded-[28px]
+                      border
+                    border-purple-100
+                      shadow-[0_6px_24px_rgba(124,58,237,0.08)]
+                      px-5
+                      py-4
+                      flex
+                      items-center
+                      gap-4
+                      hover:shadow-[0_10px_30px_rgba(124,58,237,0.12)]
+                      transition-all
+                      duration-300
+                      max-w-5xl"
+                    >
 
                       {/* NUMBER */}
 
-                      <div className="bg-gradient-to-r from-purple-600 to-violet-700 text-white min-w-[42px] h-[42px] rounded-2xl flex items-center justify-center font-bold shadow-lg">
+                      <div
+                        className="
+                        min-w-[52px]
+                        h-[52px]
+                        rounded-2xl
+                        bg-gradient-to-br
+                        from-purple-700
+                        to-violet-500
+                        text-white
+                        flex
+                        items-center
+                        justify-center
+                        font-black
+                        text-lg
+                        shadow-lg
+                        "
+                      >
 
                         {index + 1}
 
@@ -245,35 +539,123 @@ function Checkout() {
 
                       {/* IMAGE */}
 
-                      <img
-                       src={product.thumbnail}
-                        alt={product.title}
-                        className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-2xl shadow-md"
-                      />
+                      <div
+                        className="
+                        w-24
+                        h-24
+                        rounded-3xl
+                        overflow-hidden
+                        border
+                        border-gray-100
+                        shadow-md
+                        shrink-0
+                        "
+                      >
+
+                        <img
+
+                          src={
+                            product.thumbnail?.startsWith(
+                              "http"
+                            )
+
+                              ? product.thumbnail
+
+                              : "https://via.placeholder.com/300x300?text=No+Image"
+                          }
+
+                          alt={
+                            product.title
+                          }
+
+                          className="
+                          w-full
+                          h-full
+                          object-cover
+                          "
+                        />
+
+                      </div>
 
                       {/* DETAILS */}
 
                       <div className="flex-1">
 
-                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 leading-snug">
+                        <h3
+                          className="
+                          text-xl
+                          font-black
+                          text-gray-900
+                          leading-snug
+                          "
+                        >
 
                           {product.title}
 
                         </h3>
 
-                        <div className="flex flex-wrap items-center gap-3 mt-3">
+                        <p
+                          className="
+                          text-sm
+                          text-gray-500
+                          mt-2
+                          "
+                        >
 
-                          <p className="text-purple-700 text-2xl font-black">
+                          Premium Printed Test Series
+
+                        </p>
+
+                        <div
+                          className="
+                          flex
+                          items-center
+                          gap-3
+                          mt-4
+                          flex-wrap
+                          "
+                        >
+
+                          <h2
+                            className="
+                            text-3xl
+                            font-black
+                            text-purple-700
+                            "
+                          >
 
                             ₹ {product.discount_price}
 
-                          </p>
+                          </h2>
 
-                          <p className="text-gray-400 line-through text-lg">
+                          <p
+                            className="
+                            text-lg
+                            text-gray-400
+                            line-through
+                            font-semibold
+                            "
+                          >
 
                             ₹ {product.original_price}
 
                           </p>
+
+                          <span
+                            className="
+                            bg-green-100
+                            text-green-700
+                            px-3
+                            py-1
+                            rounded-full
+                            text-xs
+                            font-bold
+                            "
+                          >
+
+                            Free Delivery
+
+                          </span>
 
                         </div>
 
@@ -281,9 +663,9 @@ function Checkout() {
 
                     </div>
 
-                  </div>
+                  )
 
-                ))}
+                )}
 
               </div>
 
@@ -291,194 +673,473 @@ function Checkout() {
 
           </div>
 
-          {/* ================= RIGHT SIDE ================= */}
 
-          <div className="space-y-6">
 
-            {/* ADDRESS FORM */}
+          
 
-            <div className="bg-white rounded-[30px] shadow-xl border border-gray-100 p-5 sm:p-7">
+          {/* ====================================================== */}
+{/* ADDRESS + SUMMARY GRID */}
+{/* ====================================================== */}
 
-              <div className="flex items-center gap-3 mb-6">
+<div
+  className="
+  grid
+  grid-cols-1
+  xl:grid-cols-[1fr_420px]
+  gap-8
+  items-start
+  "
+>
 
-                <MapPin
-                  size={28}
-                  className="text-purple-700"
-                />
+  {/* ====================================================== */}
+  {/* ADDRESS SECTION */}
+  {/* ====================================================== */}
 
-                <h2 className="text-2xl md:text-3xl font-black text-gray-900">
+  <div className="space-y-6">
 
-                  Shipping Address
+    {/* ADDRESS */}
 
-                </h2>
+    <div
+      className="
+      bg-white/90
+      backdrop-blur-xl
+      rounded-[34px]
+      border
+      border-purple-100
+      shadow-[0_8px_40px_rgba(124,58,237,0.12)]
+      p-6
+      md:p-8
+      "
+    >
 
-              </div>
+      <div className="flex items-center gap-3 mb-7">
 
-              <div className="space-y-5">
+        <div
+          className="
+          w-12
+          h-12
+          rounded-2xl
+          bg-purple-100
+          flex
+          items-center
+          justify-center
+          "
+        >
 
-                <input
-                  type="text"
-                  name="fullName"
-                  value={shippingData.fullName}
-                  onChange={handleChange}
-                  placeholder="Full Name"
-                  className="w-full h-14 rounded-2xl border border-gray-200 bg-gray-50 px-5 outline-none focus:border-purple-700 focus:bg-white transition"
-                />
+          <MapPin
+            size={24}
+            className="text-purple-700"
+          />
 
-                <input
-                  type="text"
-                  name="mobile"
-                  value={shippingData.mobile}
-                  onChange={handleChange}
-                  placeholder="Mobile Number"
-                  className="w-full h-14 rounded-2xl border border-gray-200 bg-gray-50 px-5 outline-none focus:border-purple-700 focus:bg-white transition"
-                />
+        </div>
 
-                <input
-                  type="email"
-                  name="email"
-                  value={shippingData.email}
-                  onChange={handleChange}
-                  placeholder="Email Address"
-                  className="w-full h-14 rounded-2xl border border-gray-200 bg-gray-50 px-5 outline-none focus:border-purple-700 focus:bg-white transition"
-                />
+        <div>
 
-                <textarea
-                  rows="4"
-                  name="address"
-                  value={shippingData.address}
-                  onChange={handleChange}
-                  placeholder="Full Address"
-                  className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 outline-none focus:border-purple-700 focus:bg-white transition resize-none"
-                ></textarea>
+          <h2
+            className="
+            text-3xl
+            font-black
+            text-gray-900
+            "
+          >
 
-                {/* CITY + STATE */}
+            Delivery Address
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          </h2>
 
-                  <input
-                    type="text"
-                    name="city"
-                    value={shippingData.city}
-                    onChange={handleChange}
-                    placeholder="City"
-                    className="h-14 rounded-2xl border border-gray-200 bg-gray-50 px-5 outline-none focus:border-purple-700 focus:bg-white transition"
-                  />
+          <p className="text-gray-500 text-sm mt-1">
 
-                  <input
-                    type="text"
-                    name="state"
-                    value={shippingData.state}
-                    onChange={handleChange}
-                    placeholder="State"
-                    className="h-14 rounded-2xl border border-gray-200 bg-gray-50 px-5 outline-none focus:border-purple-700 focus:bg-white transition"
-                  />
+            Enter your shipping details
 
-                </div>
+          </p>
 
-                <input
-                  type="text"
-                  name="pincode"
-                  value={shippingData.pincode}
-                  onChange={handleChange}
-                  placeholder="Pincode"
-                  className="w-full h-14 rounded-2xl border border-gray-200 bg-gray-50 px-5 outline-none focus:border-purple-700 focus:bg-white transition"
-                />
+        </div>
 
-              </div>
+      </div>
 
-            </div>
+      <div className="space-y-5">
 
-            {/* ================= ORDER SUMMARY ================= */}
+        <input
+          type="text"
+          name="fullName"
+          value={shippingData.fullName}
+          onChange={handleChange}
+          placeholder="Full Name"
+          className="
+          w-full
+          h-14
+          rounded-2xl
+          border
+          border-gray-200
+          bg-gray-50
+          px-5
+          outline-none
+          focus:border-purple-500
+          "
+        />
 
-            <div className="bg-white rounded-[30px] shadow-xl border border-gray-100 p-5 sm:p-7 xl:sticky xl:top-28">
+        <input
+          type="text"
+          name="mobile"
+          value={shippingData.mobile}
+          onChange={handleChange}
+          placeholder="Mobile Number"
+          className="
+          w-full
+          h-14
+          rounded-2xl
+          border
+          border-gray-200
+          bg-gray-50
+          px-5
+          outline-none
+          focus:border-purple-500
+          "
+        />
 
-              <div className="flex items-center gap-3 mb-6">
+        <input
+          type="email"
+          name="email"
+          value={shippingData.email}
+          onChange={handleChange}
+          placeholder="Email Address"
+          className="
+          w-full
+          h-14
+          rounded-2xl
+          border
+          border-gray-200
+          bg-gray-50
+          px-5
+          outline-none
+          focus:border-purple-500
+          "
+        />
 
-                <CreditCard
-                  size={28}
-                  className="text-purple-700"
-                />
+        <textarea
+          rows="4"
+          name="address"
+          value={shippingData.address}
+          onChange={handleChange}
+          placeholder="Full Address"
+          className="
+          w-full
+          rounded-2xl
+          border
+          border-gray-200
+          bg-gray-50
+          px-5
+          py-4
+          outline-none
+          resize-none
+          focus:border-purple-500
+          "
+        ></textarea>
 
-                <h2 className="text-2xl md:text-3xl font-black text-gray-900">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-                  Order Summary
+          <input
+            type="text"
+            name="city"
+            value={shippingData.city}
+            onChange={handleChange}
+            placeholder="District / City"
+            className="
+            w-full
+            h-14
+            rounded-2xl
+            border
+            border-gray-200
+            bg-gray-50
+            px-5
+            outline-none
+            focus:border-purple-500
+            "
+          />
 
-                </h2>
+          <input
+            type="text"
+            name="state"
+            value={shippingData.state}
+            onChange={handleChange}
+            placeholder="State"
+            className="
+            w-full
+            h-14
+            rounded-2xl
+            border
+            border-gray-200
+            bg-gray-50
+            px-5
+            outline-none
+            focus:border-purple-500
+            "
+          />
 
-              </div>
+        </div>
 
-              <div className="space-y-5">
+        <input
+          type="text"
+          name="pincode"
+          value={shippingData.pincode}
+          onChange={handleChange}
+          placeholder="Pincode"
+          className="
+          w-full
+          h-14
+          rounded-2xl
+          border
+          border-gray-200
+          bg-gray-50
+          px-5
+          outline-none
+          focus:border-purple-500
+          "
+        />
 
-                <div className="flex items-center justify-between">
+      </div>
 
-                  <p className="text-gray-600 text-lg">
+    </div>
 
-                    Total Test Series
+  </div>
 
-                  </p>
+  {/* ====================================================== */}
+  {/* SUMMARY SECTION */}
+  {/* ====================================================== */}
 
-                  <p className="font-bold text-lg text-gray-900">
+  <div
+    className="
+    xl:sticky
+    xl:top-28
+    "
+  >
 
-                    {cartItems.length}
+    {/* ORDER SUMMARY */}
 
-                  </p>
+    <div
+      className="
+      bg-white
+      rounded-[34px]
+      border
+      border-purple-100
+      shadow-[0_8px_40px_rgba(124,58,237,0.12)]
+      p-6
+      md:p-8
+      "
+    >
 
-                </div>
+      <div className="flex items-center gap-3 mb-7">
 
-                <div className="flex items-center justify-between">
+        <div
+          className="
+          w-12
+          h-12
+          rounded-2xl
+          bg-purple-100
+          flex
+          items-center
+          justify-center
+          "
+        >
 
-                  <p className="text-gray-600 text-lg">
+          <CreditCard
+            size={24}
+            className="text-purple-700"
+          />
 
-                    Shipping
+        </div>
 
-                  </p>
+        <div>
 
-                  <p className="font-bold text-lg text-green-600">
+          <h2
+            className="
+            text-3xl
+            font-black
+            text-gray-900
+            "
+          >
 
-                    FREE
+            Order Summary
 
-                  </p>
+          </h2>
 
-                </div>
+          <p className="text-gray-500 text-sm mt-1">
 
-              </div>
+            Secure checkout experience
 
-              {/* TOTAL */}
+          </p>
 
-              <div className="mt-7 pt-6 border-t border-gray-100 flex items-center justify-between">
+        </div>
 
-                <h2 className="text-2xl font-black text-gray-900">
+      </div>
 
-                  Total
+      <div className="space-y-5">
 
-                </h2>
+        <div className="flex items-center justify-between">
 
-                <p className="text-3xl md:text-4xl font-black text-purple-700">
+          <p className="text-gray-600">
 
-                  ₹ {totalPrice}
+            Total Test Series
 
-                </p>
+          </p>
 
-              </div>
+          <p className="font-bold text-gray-900">
 
-              {/* PAYMENT BUTTON */}
+            {finalCartItems.length}
 
-              <button
-                onClick={handlePayment}
-                disabled={loading}
-                className="w-full mt-8 h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-violet-700 hover:scale-[1.01] hover:shadow-2xl transition-all duration-300 text-white text-lg font-bold disabled:opacity-70"
-              >
+          </p>
 
-                {loading
-                  ? "Processing..."
-                  : "Proceed To Payment"}
+        </div>
 
-              </button>
+        <div className="flex items-center justify-between">
 
-            </div>
+          <p className="text-gray-600">
 
-          </div>
+            Subtotal
+
+          </p>
+
+          <p className="font-bold text-gray-900">
+
+            ₹ {finalTotalPrice}
+
+          </p>
+
+        </div>
+
+        <div className="flex items-center justify-between">
+
+          <p className="text-gray-600">
+
+            Delivery Charges
+
+          </p>
+
+          <p className="font-bold text-green-600">
+
+            FREE
+
+          </p>
+
+        </div>
+
+        <div className="flex items-center justify-between">
+
+          <p className="text-gray-600">
+
+            Platform Fee
+
+          </p>
+
+          <p className="font-bold text-gray-900">
+
+            ₹ 0
+
+          </p>
+
+        </div>
+
+      </div>
+
+      <div
+        className="
+        mt-7
+        pt-6
+        border-t
+        border-gray-100
+        flex
+        items-center
+        justify-between
+        "
+      >
+
+        <h2
+          className="
+          text-2xl
+          font-black
+          text-gray-900
+          "
+        >
+
+          Final Total
+
+        </h2>
+
+        <h2
+          className="
+          text-4xl
+          font-black
+          text-purple-700
+          "
+        >
+
+          ₹ {finalTotalPrice}
+
+        </h2>
+
+      </div>
+
+      <div
+        className="
+        mt-6
+        bg-purple-50
+        rounded-2xl
+        p-4
+        border
+        border-purple-100
+        "
+      >
+
+        <p
+          className="
+          text-sm
+          text-purple-800
+          font-semibold
+          "
+        >
+
+          🔒 100% Secure Payment & Fast Delivery
+
+        </p>
+
+      </div>
+
+      <button
+        onClick={handlePayment}
+        disabled={loading}
+        className="
+        w-full
+        mt-7
+        h-16
+        rounded-2xl
+        bg-gradient-to-r
+        from-purple-700
+        via-purple-600
+        to-violet-500
+        text-white
+        text-lg
+        font-black
+        shadow-xl
+        hover:scale-[1.02]
+        active:scale-[0.98]
+        transition-all
+        duration-300
+        "
+      >
+
+        {loading
+
+          ? "Processing..."
+
+          : "Proceed To Payment →"}
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
 
         </div>
 

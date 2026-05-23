@@ -5,7 +5,7 @@
 import axios from "axios";
 
 export const BACKEND_URL =
-   "https://mitos-learning-backend.onrender.com";
+   "http://localhost:5000";
 
 // =====================================================
 // AXIOS INSTANCE

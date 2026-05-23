@@ -1,110 +1,38 @@
 // =====================================================
-// IMPORTS
+// IMPORT CLOUDINARY
 // =====================================================
-
-const multer =
-  require("multer");
-
-const {
-  CloudinaryStorage,
-} = require(
-  "multer-storage-cloudinary"
-);
 
 const cloudinary =
-  require(
-    "../config/cloudinary"
-  );
+  require("cloudinary")
+    .v2;
 
 // =====================================================
-// CLOUDINARY STORAGE
+// CONFIG CLOUDINARY
 // =====================================================
 
-const storage =
-  new CloudinaryStorage({
+cloudinary.config({
 
-    cloudinary,
+  cloud_name:
+    process.env
+      .CLOUDINARY_CLOUD_NAME,
 
-    params: async (
-      req,
-      file
-    ) => {
+  api_key:
+    process.env
+      .CLOUDINARY_API_KEY,
 
-      return {
+  api_secret:
+    process.env
+      .CLOUDINARY_API_SECRET,
 
-        folder:
-          "mitos-learning",
+});
 
-        allowed_formats: [
-          "jpg",
-          "jpeg",
-          "png",
-          "webp",
-        ],
-
-        public_id:
-          Date.now() +
-          "-" +
-          file.originalname
-            .split(".")[0],
-
-      };
-
-    },
-
-  });
-
-// =====================================================
-// FILE FILTER
-// =====================================================
-
-const fileFilter = (
-  req,
-  file,
-  cb
-) => {
-
-  const allowedTypes =
-    /jpg|jpeg|png|webp/;
-
-  const mimetype =
-    allowedTypes.test(
-      file.mimetype
-    );
-
-  if (mimetype) {
-
-    return cb(
-      null,
-      true
-    );
-
-  }
-
-  cb(
-    new Error(
-      "Only Images Allowed"
-    )
-  );
-
-};
-
-// =====================================================
-// MULTER UPLOAD
-// =====================================================
-
-const upload =
-  multer({
-
-    storage,
-
-    fileFilter,
-
-  });
+console.log(
+  process.env.CLOUDINARY_CLOUD_NAME
+);
 
 // =====================================================
 // EXPORT
 // =====================================================
 
 module.exports =
-  upload;
+  cloudinary;

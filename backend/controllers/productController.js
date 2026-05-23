@@ -31,7 +31,8 @@ const addProduct = async (req, res) => {
     // =====================================================
     // CLOUDINARY IMAGE
     // =====================================================
-
+     
+    console.log(req.file);
     const thumbnail =
       req.file
         ? req.file.path

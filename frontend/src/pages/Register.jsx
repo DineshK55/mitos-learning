@@ -1,32 +1,29 @@
-import { useState } from "react";
+import {useState, useEffect, useContext,} from "react";
+
+
 
 // React Router
-import {
-  Link,
-  useNavigate,
-} from "react-router-dom";
+import { Link,useNavigate,} from "react-router-dom";
 
 // Toast
 import { toast } from "react-toastify";
 
 // Icons
-import {
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  GraduationCap,
-} from "lucide-react";
+import { User, Mail, Phone, MapPin, GraduationCap,} from "lucide-react";
 
 // Service
-import {
-  registerUser,
-} from "../services/authService";
+import { registerUser,} from "../services/authService";
+
+// Context
+import {AuthContext,} from "../context/AuthContext";
 
 const Register = () => {
 
   // Navigate
   const navigate = useNavigate();
+
+  // Context
+  const { token } = useContext(AuthContext);
 
   // ================= FORM STATE =================
 
@@ -99,13 +96,19 @@ const Register = () => {
         });
 
       // Success Toast
-      toast.success(
-        data.message ||
-          "Registration Successful"
-      );
-
+     toast.success(
+  "Account Created Successfully"
+);
       // Redirect Login
-      navigate("/login");
+     navigate(
+  "/login",
+  {
+    state: {
+      registeredEmail:
+        formData.email,
+    },
+  }
+);
 
     } catch (error) {
 
@@ -122,6 +125,18 @@ const Register = () => {
 
     }
   };
+
+
+  // ================= AUTO REDIRECT =================
+
+useEffect(() => {
+
+  if (token) {
+
+    navigate("/");
+  }
+
+}, [token, navigate]);
 
   return (
 
@@ -416,7 +431,7 @@ const Register = () => {
 
         <p className="text-center mt-7 text-gray-600 text-sm sm:text-base">
 
-          Already have an account?{" "}
+          Already registered?{" "}
 
           <Link
             to="/login"

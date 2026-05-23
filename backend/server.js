@@ -60,24 +60,7 @@ app.use(
 // STATIC FOLDER SERVING
 // =====================================================
 
-const uploadsPath = path.join(
-  __dirname,
-  "uploads"
-);
 
-app.use(
-  "/uploads",
-  express.static(uploadsPath)
-);
-
-console.log("UPLOAD PATH:", uploadsPath);
-
-
-app.get("/check-upload", (req, res) => {
-
-  res.send("UPLOAD ROUTE WORKING");
-
-});
 
 // =====================================================
 // API ROUTES

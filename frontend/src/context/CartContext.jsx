@@ -4,7 +4,9 @@ import {
   useState,
 } from "react";
 
-// ================= CONTEXT =================
+// =====================================================
+// CONTEXT
+// =====================================================
 
 const CartContext =
   createContext();
@@ -17,13 +19,17 @@ export const CartProvider = ({
   children,
 }) => {
 
-  // ================= STATE =================
+  // =====================================================
+  // CART STATE
+  // =====================================================
 
-  const [cartItems, setCartItems] =
-    useState([]);
+  const [
+    finalCartItems,
+    setFinalCartItems,
+  ] = useState([]);
 
   // =====================================================
-  // ADD PRODUCT
+  // ADD TO CART
   // =====================================================
 
   const addToCart = (
@@ -31,22 +37,24 @@ export const CartProvider = ({
   ) => {
 
     const alreadyExists =
-      cartItems.find(
+      finalCartItems.find(
         (item) =>
           item.id === product.id
       );
 
     if (!alreadyExists) {
 
-      setCartItems([
-        ...cartItems,
+      setFinalCartItems([
+        ...finalCartItems,
         product,
       ]);
+
     }
+
   };
 
   // =====================================================
-  // REMOVE PRODUCT
+  // REMOVE FROM CART
   // =====================================================
 
   const removeFromCart = (
@@ -54,14 +62,25 @@ export const CartProvider = ({
   ) => {
 
     const updatedCart =
-      cartItems.filter(
+      finalCartItems.filter(
         (item) =>
           item.id !== productId
       );
 
-    setCartItems(
+    setFinalCartItems(
       updatedCart
     );
+
+  };
+
+  // =====================================================
+  // CLEAR CART
+  // =====================================================
+
+  const clearCart = () => {
+
+    setFinalCartItems([]);
+
   };
 
   // =====================================================
@@ -69,22 +88,28 @@ export const CartProvider = ({
   // =====================================================
 
   const totalPrice =
-    cartItems.reduce(
+    finalCartItems.reduce(
+
       (total, item) => {
 
         return (
+
           total +
+
           Number(
             item.discount_price || 0
           )
+
         );
 
       },
+
       0
+
     );
 
   // =====================================================
-  // PROVIDER
+  // PROVIDER VALUE
   // =====================================================
 
   return (
@@ -92,11 +117,13 @@ export const CartProvider = ({
     <CartContext.Provider
       value={{
 
-        cartItems,
+        finalCartItems,
 
         addToCart,
 
         removeFromCart,
+
+        clearCart,
 
         totalPrice,
 
@@ -108,6 +135,7 @@ export const CartProvider = ({
     </CartContext.Provider>
 
   );
+
 };
 
 // =====================================================
@@ -119,4 +147,5 @@ export const useCart = () => {
   return useContext(
     CartContext
   );
+
 };

@@ -4,65 +4,39 @@
 
 const multer = require("multer");
 
-const path = require("path");
+const {
+  CloudinaryStorage,
+} = require("multer-storage-cloudinary");
 
-const fs = require("fs");
-
-// =====================================================
-// CREATE UPLOADS FOLDER
-// =====================================================
-
-const uploadPath = path.join(
-  __dirname,
-  "../uploads"
-);
-
-if (!fs.existsSync(uploadPath)) {
-
-  fs.mkdirSync(uploadPath, {
-    recursive: true,
-  });
-
-}
+const cloudinary = require("../config/cloudinary");
 
 // =====================================================
-// STORAGE CONFIG
+// CLOUDINARY STORAGE
 // =====================================================
 
 const storage =
-  multer.diskStorage({
+  new CloudinaryStorage({
 
-    // =====================================================
-    // DESTINATION
-    // =====================================================
+    cloudinary,
 
-    destination: function (
+    params: async (
       req,
-      file,
-      cb
-    ) {
+      file
+    ) => {
 
-      cb(null, uploadPath);
+      return {
 
-    },
+        folder:
+          "mitos-learning",
 
-    // =====================================================
-    // FILE NAME
-    // =====================================================
+        allowed_formats: [
+          "jpg",
+          "jpeg",
+          "png",
+          "webp",
+        ],
 
-    filename: function (
-      req,
-      file,
-      cb
-    ) {
-
-      const uniqueName =
-        Date.now() +
-        path.extname(
-          file.originalname
-        );
-
-      cb(null, uniqueName);
+      };
 
     },
 
@@ -81,39 +55,29 @@ const fileFilter = (
   const allowedTypes =
     /jpg|jpeg|png|webp/;
 
-  const extname =
-    allowedTypes.test(
-      path
-        .extname(
-          file.originalname
-        )
-        .toLowerCase()
-    );
-
-  const mimetype =
+  const isValid =
     allowedTypes.test(
       file.mimetype
     );
 
-  if (
-    extname &&
-    mimetype
-  ) {
+  if (isValid) {
 
-    return cb(null, true);
+    cb(null, true);
+
+  } else {
+
+    cb(
+      new Error(
+        "Only Image Files Allowed"
+      )
+    );
 
   }
-
-  cb(
-    new Error(
-      "Only Images Allowed"
-    )
-  );
 
 };
 
 // =====================================================
-// UPLOAD
+// MULTER UPLOAD
 // =====================================================
 
 const upload = multer({

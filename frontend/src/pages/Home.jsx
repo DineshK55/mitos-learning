@@ -55,10 +55,10 @@ function Home() {
   // =====================================================
 
   const {
-    addToCart,
-    removeFromCart,
-    cartItems,
-  } = useCart();
+  finalCartItems,
+  addToCart,
+  removeFromCart,
+} = useCart();
 
   // =====================================================
   // FETCH PRODUCTS
@@ -102,7 +102,7 @@ function Home() {
   useEffect(() => {
 
     const selectedIds =
-      cartItems.map(
+      finalCartItems.map(
         (item) => item.id
       );
 
@@ -110,7 +110,7 @@ function Home() {
       selectedIds
     );
 
-  }, [cartItems]);
+  }, [finalCartItems]);
 
   // =====================================================
   // HANDLE SELECT PRODUCT
@@ -307,301 +307,174 @@ md:gap-6
 
         )}
 
-        {/* ===================================================== */}
-        {/* SELECTED PRODUCTS */}
-        {/* ===================================================== */}
+        
+        
+{/* ===================================================== */}
+{/* STICKY CHECKOUT BAR */}
+{/* ===================================================== */}
 
-        {selectedProducts.length > 0 && (
+{/* ===================================================== */}
+{/* ULTRA PREMIUM FLOATING CHECKOUT BAR */}
+{/* ===================================================== */}
 
-          <div
+{selectedProducts.length > 0 && (
+
+  <div
+    className="
+    fixed
+    bottom-5
+    left-1/2
+    -translate-x-1/2
+    z-50
+    w-[92%]
+    max-w-2xl
+    "
+  >
+
+    <div
+      className="
+      bg-white/75
+      backdrop-blur-2xl
+      border
+      border-white/40
+      shadow-[0_8px_40px_rgba(124,58,237,0.18)]
+      rounded-full
+      px-4
+      py-3
+      flex
+      items-center
+      justify-between
+      "
+    >
+
+      {/* LEFT SIDE */}
+
+      <div className="flex items-center gap-3">
+
+        {/* ICON */}
+
+        <div
+          className="
+          w-11
+          h-11
+          rounded-full
+          bg-gradient-to-br
+          from-purple-700
+          to-purple-500
+          flex
+          items-center
+          justify-center
+          shadow-lg
+          shrink-0
+          "
+        >
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-5 h-5 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
+          >
+
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5.4 5M7 13l-1.293 1.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            />
+
+          </svg>
+
+        </div>
+
+        {/* TEXT */}
+
+        <div>
+
+          <p
             className="
-            mt-12 md:mt-16
-            bg-white
-            rounded-3xl
-            shadow-xl
-            border
-            border-gray-100
-            p-5
-            md:p-7
+            text-xs
+            md:text-sm
+            text-gray-500
+            font-medium
             "
           >
 
-            {/* HEADER */}
+            {selectedProducts.length}
+            {" "}
+            Selected
 
-            <div
-              className="
-              flex
-              flex-col
-              md:flex-row
-              md:items-center
-              md:justify-between
-              gap-4
-              mb-6
-              "
-            >
+          </p>
 
-              <div>
+          <h2
+            className="
+            text-lg
+            md:text-xl
+            font-black
+            text-gray-900
+            leading-none
+            mt-1
+            "
+          >
 
-                <h2
-                  className="
-                  text-2xl
-                  md:text-3xl
-                  font-black
-                  text-gray-900
-                  "
-                >
+            ₹ {totalPrice}
 
-                  Selected Test Series
+          </h2>
 
-                </h2>
+        </div>
 
-                <p className="text-gray-500 text-sm mt-1">
+      </div>
 
-                  Ready for checkout
+      {/* BUTTON */}
 
-                </p>
+      <button
+  onClick={() => {
 
-              </div>
+    // ============================================
+    // REMOVE OLD BUY NOW PRODUCT
+    // ============================================
 
-              <div
-                className="
-                bg-purple-100
-                text-purple-700
-                px-4
-                py-2
-                rounded-2xl
-                font-bold
-                text-sm
-                w-fit
-                "
-              >
+    localStorage.removeItem(
+      "checkoutProduct"
+    );
 
-                {selectedProducts.length} Selected
+    // ============================================
+    // NAVIGATE TO CHECKOUT
+    // ============================================
 
-              </div>
+    navigate("/checkout");
 
-            </div>
+  }}
+  className="
+  bg-gradient-to-r
+  from-purple-700
+  to-purple-600
+  hover:scale-105
+  active:scale-95
+  text-white
+  px-5
+  md:px-6
+  py-3
+  rounded-full
+  font-bold
+  text-sm
+  transition-all
+  duration-300
+  shadow-lg
+  whitespace-nowrap
+  "
+>
 
-            {/* PRODUCTS */}
+        Checkout →
 
-            <div className="space-y-4">
+      </button>
 
-              {selectedProductsData.map(
-                (product, index) => (
+    </div>
 
-                  <div
-                    key={product.id}
-                    className="
-                    bg-[#F8FAFC]
-                    rounded-2xl
-                    p-4
-                    flex
-                    flex-col
-                    md:flex-row
-                    md:items-center
-                    md:justify-between
-                    gap-4
-                    border
-                    border-gray-100
-                    "
-                  >
+  </div>
 
-                    {/* LEFT */}
-
-                    <div className="flex items-center gap-4">
-
-                      {/* NUMBER */}
-
-                      <div
-                        className="
-                        w-10
-                        h-10
-                        rounded-xl
-                        bg-purple-700
-                        text-white
-                        flex
-                        items-center
-                        justify-center
-                        font-bold
-                        text-sm
-                        "
-                      >
-
-                        {index + 1}
-
-                      </div>
-
-                      {/* IMAGE */}
-
-                     <img src={`http://localhost:5000/uploads/${product.thumbnail}`}
-                        alt={product.title}
-                        className="
-                        w-14
-                        h-14
-                        md:w-16
-                        md:h-16
-                        rounded-xl
-                        object-cover
-                        border
-                        "
-                      />
-
-                      {/* DETAILS */}
-
-                      <div>
-
-                        <h3
-                          className="
-                          text-base
-                          md:text-lg
-                          font-bold
-                          text-gray-900
-                          "
-                        >
-
-                          {product.title}
-
-                        </h3>
-
-                        <p
-                          className="
-                          text-purple-700
-                          font-black
-                          text-lg
-                          mt-1
-                          "
-                        >
-
-                          ₹ {product.discount_price}
-
-                        </p>
-
-                      </div>
-
-                    </div>
-
-                    {/* REMOVE 
-
-                    //<button
-                      onClick={() =>
-                        handleSelectProduct(
-                          product
-                        )
-                      }
-                      className="
-                      bg-red-500
-                      hover:bg-red-600
-                      text-white
-                      px-5
-                      py-2.5
-                      rounded-xl
-                      text-sm
-                      font-semibold
-                      transition-all
-                      duration-300
-                      w-full
-                      md:w-auto
-                      "
-                    >
-
-                      Remove
-
-                    </button>*/}
-
-                  </div>
-
-                )
-              )}
-
-            </div>
-
-            {/* TOTAL */}
-
-            <div
-              className="
-              mt-8
-              pt-6
-              border-t
-              border-gray-200
-              flex
-              flex-col
-              md:flex-row
-              md:items-center
-              md:justify-between
-              gap-4
-              "
-            >
-
-              <div>
-
-                <h3
-                  className="
-                  text-xl
-                  font-black
-                  text-gray-900
-                  "
-                >
-
-                  Total Amount
-
-                </h3>
-
-                <p className="text-gray-500 text-sm mt-1">
-
-                  Inclusive of all discounts
-
-                </p>
-
-              </div>
-
-              <h2
-                className="
-                text-2xl
-                md:text-3xl
-                font-black
-                text-purple-700
-                "
-              >
-
-                ₹ {totalPrice}
-
-              </h2>
-
-            </div>
-
-            {/* CHECKOUT */}
-
-            <button
-              onClick={() =>
-                navigate("/checkout")
-              }
-              className="
-              w-full
-              md:w-auto
-              mt-6
-              bg-purple-700
-              hover:bg-purple-800
-              text-white
-              px-6
-              md:px-8
-              py-3
-              md:py-3.5
-              rounded-2xl
-              font-bold
-              text-base
-              transition-all
-              duration-300
-              shadow-lg
-              "
-            >
-
-              Proceed To Checkout
-
-            </button>
-
-          </div>
-
-        )}
+)}
 
       </div>
 

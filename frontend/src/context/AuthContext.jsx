@@ -14,24 +14,65 @@ const AuthProvider = ({ children }) => {
   );
 
   // Loading State
-  const [loading, setLoading] = useState(true);
+  const [loading,  setLoading] = useState(true);
 
   // Is Authenticated
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Load User From LocalStorage
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
+  // Auth Ready State
+   const [authReady, setAuthReady] = useState(false);
 
-    if (storedUser && storedToken) {
-      setUser(JSON.parse(storedUser));
+  // Load User From LocalStorage
+ useEffect(() => {
+
+  try {
+
+    const storedUser =
+      localStorage.getItem("user");
+
+    const storedToken =
+      localStorage.getItem("token");
+
+    if (
+      storedUser &&
+      storedToken
+    ) {
+
+      setUser(
+        JSON.parse(storedUser)
+      );
+
       setToken(storedToken);
+
       setIsAuthenticated(true);
+
+    } else {
+
+      setUser(null);
+
+      setToken(null);
+
+      setIsAuthenticated(false);
+
     }
 
+  } catch (error) {
+
+    console.log(error);
+
+    localStorage.removeItem("user");
+
+    localStorage.removeItem("token");
+
+  } finally {
+
     setLoading(false);
-  }, []);
+
+    setAuthReady(true);
+
+  }
+
+}, []);
 
   // Login Function
   const login = (userData, userToken) => {
@@ -53,23 +94,35 @@ const AuthProvider = ({ children }) => {
   };
 
   // Logout Function
-  const logout = () => {
-    // Clear States
-    setUser(null);
-    setToken(null);
-    setIsAuthenticated(false);
+ const logout = () => {
 
-    // Clear LocalStorage
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-  };
+  // Clear States
+  setUser(null);
 
+  setToken(null);
+
+  setIsAuthenticated(false);
+
+  // Clear Storage
+  localStorage.removeItem("user");
+
+  localStorage.removeItem("token");
+
+  localStorage.removeItem(
+    "checkoutProduct"
+  );
+
+  // Redirect
+  window.location.href =
+    "/login";
+};
   return (
     <AuthContext.Provider
       value={{
         user,
         token,
         loading,
+        authReady,
         isAuthenticated,
         login,
         logout,

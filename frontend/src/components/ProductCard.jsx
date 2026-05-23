@@ -100,42 +100,7 @@ function ProductCard({
         {/* SELECT BUTTON */}
         {/* ===================================================== */}
 
-        <button
-          onClick={() => onSelect(id)}
-          className={`
-          absolute
-          top-3
-          right-3
-          w-8
-          h-8
-          rounded-2xl
-          border
-          flex
-          items-center
-          justify-center
-          transition-all
-          duration-300
-          backdrop-blur-md
-          shadow-md
-          ${
-            isSelected
-              ? "bg-purple-700 border-purple-700 text-white"
-              : "bg-white/90 border-white"
-          }
-          `}
-        >
-
-          {isSelected && (
-
-            <span className="text-xs font-bold">
-
-              ✓
-
-            </span>
-
-          )}
-
-        </button>
+        
 
       </div>
 
@@ -151,6 +116,55 @@ function ProductCard({
         flex-grow
         "
       >
+
+        <div className="flex items-start justify-between mb-3">
+
+  <div
+    onClick={() => onSelect(id)}
+    className={`
+    w-6
+    h-6
+    rounded-md
+    border-2
+    flex
+    items-center
+    justify-center
+    cursor-pointer
+    transition-all
+    duration-300
+    shrink-0
+    ${
+      isSelected
+        ? "bg-purple-700 border-purple-700"
+        : "border-gray-300 bg-white hover:border-purple-500"
+    }
+    `}
+  >
+
+    {isSelected && (
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-4 h-4 text-white"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={3}
+      >
+
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M5 13l4 4L19 7"
+        />
+
+      </svg>
+
+    )}
+
+  </div>
+
+</div>
 
         {/* ===================================================== */}
         {/* TITLE */}

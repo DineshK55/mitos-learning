@@ -82,14 +82,14 @@ const fetchUserCart = async (req, res) => {
 
 
 
-    const cartItems =
+    const finalCartItems =
       await getUserCart(user_id);
 
 
 
 
 
-    res.status(200).json(cartItems);
+    res.status(200).json(finalCartItems);
 
   } catch (error) {
 

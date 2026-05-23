@@ -43,6 +43,8 @@ function HomeBanner() {
         const response =
           await getAllBanners();
 
+          console.log(response);
+
         const activeBanners =
           response.banners.filter(
             (banner) =>
@@ -53,6 +55,8 @@ function HomeBanner() {
         setBanners(
           activeBanners
         );
+
+        console.log(activeBanners);
 
       } catch (error) {
 

@@ -7,20 +7,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 // Icons
-import {
-  Mail,
-  ShieldCheck,
-  ArrowLeft,
-} from "lucide-react";
+import {Mail,ShieldCheck,ArrowLeft,} from "lucide-react";
 
 // Context
 import { AuthContext } from "../context/AuthContext";
 
 // Services
-import {
-  sendLoginOTP,
-  verifyLoginOTP,
-} from "../services/authService";
+import { sendLoginOTP,verifyLoginOTP,} from "../services/authService";
+
+import {useEffect,} from "react";
 
 const Login = () => {
 
@@ -28,8 +23,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   // Context
-  const { login } =
-    useContext(AuthContext);
+ const { login, token,} = useContext(AuthContext);
 
   // ================= STATES =================
 
@@ -142,6 +136,17 @@ const Login = () => {
     }
   };
 
+  // ================= AUTO REDIRECT =================
+
+useEffect(() => {
+
+  if (token) {
+
+    navigate("/");
+  }
+
+}, [token, navigate]);
+
   return (
 
     <div className="min-h-screen bg-gradient-to-br from-gray-100 via-purple-50 to-white flex items-center justify-center px-4 py-10">
@@ -245,6 +250,36 @@ const Login = () => {
 
             </button>
 
+            {/* REGISTER LINK */}
+
+<div className="text-center">
+
+  <p className="text-sm text-gray-500">
+
+    Don’t have an account?
+
+    <button
+      type="button"
+      onClick={() =>
+        navigate("/register")
+      }
+      className="
+      ml-2
+      text-purple-700
+      font-bold
+      hover:underline
+      "
+    >
+
+      Create Account
+
+    </button>
+
+  </p>
+
+</div>
+
+
           </form>
 
         ) : (
@@ -326,6 +361,33 @@ const Login = () => {
               Change Email
 
             </button>
+
+            <div className="text-center">
+
+  <p className="text-sm text-gray-500">
+
+    New Student?
+
+    <button
+      type="button"
+      onClick={() =>
+        navigate("/register")
+      }
+      className="
+      ml-2
+      text-purple-700
+      font-bold
+      hover:underline
+      "
+    >
+
+      Register Here
+
+    </button>
+
+  </p>
+
+</div>
 
           </form>
         )}
