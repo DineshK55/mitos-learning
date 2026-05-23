@@ -68,59 +68,36 @@ app.use(
 
 // USER ROUTES
 
-app.use(
-  "/api/users",
-  userRoutes
-);
+app.use( "/api/users", userRoutes);
 
 // AUTH ROUTES
 
-app.use(
-  "/api/auth",
-  authRoutes
-);
+app.use( "/api/auth",  authRoutes);
 
 // OTP ROUTES
 
-app.use(
-  "/api/otp",
-  otpRoutes
-);
+app.use( "/api/otp", otpRoutes);
 
 // PRODUCT ROUTES
 
-app.use(
-  "/api/products",
-  productRoutes
+app.use( "/api/products", productRoutes
 );
 
 // CART ROUTES
 
-app.use(
-  "/api/cart",
-  cartRoutes
-);
+app.use("/api/cart",cartRoutes);
 
 // ORDER ROUTES
 
-app.use(
-  "/api/orders",
-  orderRoutes
-);
+app.use( "/api/orders",orderRoutes);
 
 // ADMIN ROUTES
 
-app.use(
-  "/api/admin",
-  adminRoutes
-);
+app.use("/api/admin",adminRoutes);
 
 // BANNER ROUTES
 
-app.use(
-  "/api/banners",
-  bannerRoutes
-);
+app.use("/api/banners", bannerRoutes);
 
 // =====================================================
 // TEST ROUTE
